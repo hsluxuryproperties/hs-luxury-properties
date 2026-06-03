@@ -1,0 +1,1 @@
+# hs-luxury-properties

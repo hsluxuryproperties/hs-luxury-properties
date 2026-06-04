@@ -34,15 +34,14 @@ export default function Header() {
 
         {/* Logo */}
         <Link href="/#top" className="flex items-center gap-3 group">
-          <div className="relative w-10 h-10">
-            <Image
-              src="/logo.png"
-              alt="HS Luxury Properties"
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+         <Image
+  src="/logo.png"
+  alt="HS Luxury Properties"
+  width={40}
+  height={40}
+  className="object-contain"
+  priority
+/>
           <div className="hidden sm:block">
             <p className="text-gold-gradient font-serif text-sm font-semibold leading-tight tracking-widest uppercase">
               HS Luxury

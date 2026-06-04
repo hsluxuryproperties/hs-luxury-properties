@@ -23,14 +23,13 @@ export default function Footer() {
           {/* About Us */}
           <div className="md:col-span-1">
             <Link href="/#top" className="flex items-center gap-3 mb-6">
-              <div className="relative w-10 h-10">
-                <Image
-                  src="/logo.png"
-                  alt="HS Luxury Properties"
-                  fill
-                  className="object-contain"
-                />
-              </div>
+              <Image
+  src="/logo.png"
+  alt="HS Luxury Properties"
+  width={40}
+  height={40}
+  className="object-contain"
+/>
               <span className="text-gold-gradient font-serif font-semibold tracking-widest uppercase text-sm">
                 HS Luxury Properties
               </span>

@@ -122,16 +122,24 @@ export default async function AdminDashboard() {
                     <td style={{ padding: '16px 24px', fontSize: '13px', color: '#F5F0E8' }}>{p.title}</td>
                     <td style={{ padding: '16px 24px', fontSize: '12px', color: '#888888' }}>{p.region}</td>
                     <td style={{ padding: '16px 24px', fontSize: '12px', color: '#F5F0E8' }}>€{Number(p.price).toLocaleString()}</td>
-                    <td style={{ padding: '16px 24px' }}>
-                      <span style={{
-                        fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase',
-                        padding: '4px 10px',
-                        border: `1px solid ${p.status === 'for_sale' ? 'rgba(212,160,23,0.4)' : 'rgba(100,180,100,0.4)'}`,
-                        color: p.status === 'for_sale' ? '#F0C040' : '#80C080',
-                      }}>
-                        {p.status === 'for_sale' ? 'For Sale' : 'For Rent'}
-                      </span>
-                    </td>
+                   <td style={{ padding: '16px 24px' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+    <span style={{
+      fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase',
+      padding: '4px 10px',
+      border: `1px solid ${p.status === 'for_sale' ? 'rgba(212,160,23,0.4)' : 'rgba(100,180,100,0.4)'}`,
+      color: p.status === 'for_sale' ? '#F0C040' : '#80C080',
+      display: 'inline-block',
+    }}>
+      {p.status === 'for_sale' ? 'For Sale' : 'For Rent'}
+    </span>
+    {!p.active && (
+      <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid rgba(220,80,80,0.4)', color: '#E05555', display: 'inline-block' }}>
+        Inactive
+      </span>
+    )}
+  </div>
+</td>
                     <td style={{ padding: '16px 24px', fontSize: '12px', color: '#888888' }}>
                       {p.featured_investor && <span style={{ color: '#F0C040', marginRight: '8px' }}>Investor</span>}
                       {p.featured_home     && <span style={{ color: '#F0C040' }}>Home</span>}
@@ -142,7 +150,7 @@ export default async function AdminDashboard() {
                         <Link href={`/admin/properties/edit?id=${p.id}`} style={{ fontSize: '11px', color: '#F0C040', textDecoration: 'none', letterSpacing: '1px' }}>
                           Edit
                         </Link>
-                        <Link href={`/properties/${p.id}`} target="_blank" style={{ fontSize: '11px', color: '#888888', textDecoration: 'none', letterSpacing: '1px' }}>
+                        <Link href={`/properties/${p.property_code}`} target="_blank" style={{ fontSize: '11px', color: '#888888', textDecoration: 'none', letterSpacing: '1px' }}>
                           View
                         </Link>
                       </div>

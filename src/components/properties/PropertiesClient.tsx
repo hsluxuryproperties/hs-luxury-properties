@@ -67,7 +67,7 @@ function PropertyCard({ property }: { property: Property }) {
         )}
 
         {/* Overlay — clicking this navigates */}
-        <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>
+        <Link href={`/properties/${property.property_code}`} style={{ textDecoration: 'none' }}>
           <div className="property-overlay">
             <span className="property-tag">
               {property.status === 'for_sale' ? 'For Sale' : 'For Rent'} · {property.property_code}

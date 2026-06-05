@@ -38,7 +38,7 @@ function PropertyCard({ property }: { property: Property }) {
     : `Residence · ${property.status === 'for_sale' ? 'For Sale' : 'For Rent'}`
 
   return (
-    <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>
+    <Link href={`/properties/${property.property_code}`} style={{ textDecoration: 'none' }}>
       <div className="property-card">
         {firstImage ? (
           <img

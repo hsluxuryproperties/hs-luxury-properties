@@ -132,6 +132,7 @@ const defaultForm: FormData = {
   featured_home:      false,
   latitude:           null,
   longitude:          null,
+  active:              true, 
 }
 
 export default function PropertyForm({ existing }: { existing?: Property }) {
@@ -373,7 +374,19 @@ export default function PropertyForm({ existing }: { existing?: Property }) {
           </label>
         ))}
       </div>
-
+{/* ── ACTIVE STATUS ── */}
+<div style={sectionTitleStyle}>Listing Status</div>
+<div style={{ display: 'flex', gap: '32px', marginBottom: '32px' }}>
+  <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontSize: '13px', color: '#CCCCCC' }}>
+    <input
+      type="checkbox"
+      checked={!!F.active}
+      onChange={e => set('active', e.target.checked)}
+      style={{ accentColor: '#F0C040', width: '16px', height: '16px', cursor: 'pointer' }}
+    />
+    Listing is Active (visible to the public)
+  </label>
+</div>
       {/* ── FEATURED ── */}
       <div style={sectionTitleStyle}>Homepage Featured</div>
       <div style={{ display: 'flex', gap: '32px', marginBottom: '32px' }}>

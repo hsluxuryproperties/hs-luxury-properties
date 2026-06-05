@@ -40,6 +40,7 @@ export type Property = {
   student_friendly: boolean
   from_auction: boolean
   golden_visa: boolean
+  active: boolean
   featured_investor: boolean
   featured_home: boolean
   latitude: number | null

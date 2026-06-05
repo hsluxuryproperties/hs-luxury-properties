@@ -14,7 +14,9 @@ export default function PropertyContact({
 }) {
   const [name,      setName]      = useState('')
   const [email,     setEmail]     = useState('')
+  const [emailError, setEmailError] = useState('')
   const [phone,     setPhone]     = useState('')
+  const [phoneError, setPhoneError] = useState('')
   const [message,   setMessage]   = useState(`I am interested in ${propertyCode}`)
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([{ from: '09:00', to: '18:00' }])
   const [sending,   setSending]   = useState(false)
@@ -42,9 +44,23 @@ export default function PropertyContact({
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setSending(true)
-    setError('')
+  e.preventDefault()
+  
+  const digits = phone.replace(/\D/g, '')
+  if (digits.length < 10) {
+    setPhoneError('Please enter a valid phone number')
+    return
+  }
+  
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  if (!validEmail) {
+    setEmailError('Please enter a valid email address')
+    return
+  }
+
+  setSending(true)
+  setError('')
+  // ... rest of submit logic unchanged
 
     const fullMessage = message + buildCallNote()
 
@@ -137,29 +153,55 @@ export default function PropertyContact({
           </div>
 
           {/* Email */}
-          <div>
-            <label style={labelS}>Email *</label>
-            <input
-              style={inputS}
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-          </div>
+<div>
+  <label style={labelS}>Email *</label>
+  <input
+    style={inputS}
+    type="email"
+    value={email}
+    onChange={e => setEmail(e.target.value)}
+    onBlur={e => {
+      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.target.value)
+      setEmailError(valid ? '' : 'Please enter a valid email address')
+    }}
+    required
+    placeholder="your@email.com"
+  />
+  {emailError && (
+    <div style={{ fontSize: '11px', color: '#E05555', marginTop: '4px', fontFamily: 'Montserrat, sans-serif' }}>
+      {emailError}
+    </div>
+  )}
+</div>
 
           {/* Phone */}
-          <div>
-            <label style={labelS}>Phone *</label>
-            <input
-              style={inputS}
-              type="tel"
-              value={phone}
-              onChange={e => setPhone(e.target.value)}
-              required
-              placeholder="+30 210 000 0000"
-            />
-          </div>
+<div>
+  <label style={labelS}>Phone *</label>
+  <input
+    style={inputS}
+    type="tel"
+    value={phone}
+    onChange={e => {
+      const cleaned = e.target.value.replace(/[^\d\s\+\-\(\)]/g, '')
+      setPhone(cleaned)
+    }}
+    onBlur={e => {
+      const digits = e.target.value.replace(/\D/g, '')
+      if (digits.length < 10) {
+        setPhoneError('Please enter a valid phone number')
+      } else {
+        setPhoneError('')
+      }
+    }}
+    required
+    placeholder="+30 210 000 0000"
+  />
+  {phoneError && (
+    <div style={{ fontSize: '11px', color: '#E05555', marginTop: '4px', fontFamily: 'Montserrat, sans-serif' }}>
+      {phoneError}
+    </div>
+  )}
+</div>
 
           {/* Call hours */}
           <div>

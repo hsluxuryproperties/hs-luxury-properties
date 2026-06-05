@@ -104,24 +104,48 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-        {/* Background pattern */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: `
-            radial-gradient(ellipse at 50% 50%, rgba(212,160,23,0.06) 0%, transparent 70%),
-            repeating-linear-gradient(45deg, transparent, transparent 60px,
-            rgba(212,160,23,0.025) 60px, rgba(212,160,23,0.025) 61px)
-          `,
-        }} />
+        {/* Enhanced Gold Luxury Background Pattern & Lighting */}
+<div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+  {/* Left Gold Ambient Glow Orb */}
+  <div style={{
+    position: 'absolute',
+    top: '20%',
+    left: '15%',
+    width: '400px',
+    height: '400px',
+    background: 'radial-gradient(circle, rgba(240,192,64,0.08) 0%, transparent 70%)',
+    filter: 'blur(40px)',
+  }} />
 
-        {/* Replaced Monogram text with Image component + Gold Glow */}
+  {/* Right Gold Ambient Glow Orb */}
+  <div style={{
+    position: 'absolute',
+    bottom: '10%',
+    right: '10%',
+    width: '450px',
+    height: '450px',
+    background: 'radial-gradient(circle, rgba(212,160,23,0.06) 0%, transparent 70%)',
+    filter: 'blur(50px)',
+  }} />
+
+  {/* Complex Center Gradient & Crisp Geometric Gold Lines */}
+  <div style={{
+    position: 'absolute', 
+    inset: 0,
+    background: `
+      radial-gradient(ellipse at 50% 40%, rgba(240,192,64,0.09) 0%, transparent 65%),
+      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(240,192,64,0.015) 40px, rgba(240,192,64,0.015) 41px),
+      repeating-linear-gradient(-45deg, transparent, transparent 80px, rgba(212,160,23,0.01) 80px, rgba(212,160,23,0.01) 81px)
+    `,
+  }} />
+</div>
+
+        {/* Replaced Monogram text with Image component  */}
 <div 
   className="fade-up" 
   style={{ 
     marginBottom: '32px', 
     position: 'relative',
-    // This creates the soft, luxury gold glow radiating behind your transparent logo
-    filter: 'drop-shadow(0px 0px 30px rgba(240, 192, 64, 0.35)) drop-shadow(0px 0px 60px rgba(212, 160, 23, 0.2))'
   }}
 >
   <Image 

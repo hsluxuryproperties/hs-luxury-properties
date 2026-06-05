@@ -114,8 +114,16 @@ export default async function Home() {
           `,
         }} />
 
-        {/* Replaced Monogram text with Image component */}
-<div className="fade-up" style={{ marginBottom: '32px', position: 'relative' }}>
+        {/* Replaced Monogram text with Image component + Gold Glow */}
+<div 
+  className="fade-up" 
+  style={{ 
+    marginBottom: '32px', 
+    position: 'relative',
+    // This creates the soft, luxury gold glow radiating behind your transparent logo
+    filter: 'drop-shadow(0px 0px 30px rgba(240, 192, 64, 0.35)) drop-shadow(0px 0px 60px rgba(212, 160, 23, 0.2))'
+  }}
+>
   <Image 
     src="/logo.png" 
     alt="HS Luxury Properties Logo" 

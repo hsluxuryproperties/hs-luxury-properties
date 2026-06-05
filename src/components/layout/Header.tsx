@@ -53,7 +53,7 @@ export default function Header() {
             letterSpacing: '3px',
             lineHeight: 1,
           }}>
-            HS Luxury Properties
+            Luxury Properties
           </span>
           <span style={{
             fontFamily: 'Montserrat, sans-serif',

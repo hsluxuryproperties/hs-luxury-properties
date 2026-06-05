@@ -104,38 +104,15 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-        {/* Enhanced Gold Luxury Background Pattern & Lighting */}
+      {/* Crisp Geometric Luxury Gold Line Grid */}
 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-  {/* Left Gold Ambient Glow Orb */}
-  <div style={{
-    position: 'absolute',
-    top: '20%',
-    left: '15%',
-    width: '400px',
-    height: '400px',
-    background: 'radial-gradient(circle, rgba(240,192,64,0.08) 0%, transparent 70%)',
-    filter: 'blur(40px)',
-  }} />
-
-  {/* Right Gold Ambient Glow Orb */}
-  <div style={{
-    position: 'absolute',
-    bottom: '10%',
-    right: '10%',
-    width: '450px',
-    height: '450px',
-    background: 'radial-gradient(circle, rgba(212,160,23,0.06) 0%, transparent 70%)',
-    filter: 'blur(50px)',
-  }} />
-
-  {/* Complex Center Gradient & Crisp Geometric Gold Lines */}
   <div style={{
     position: 'absolute', 
     inset: 0,
     background: `
-      radial-gradient(ellipse at 50% 40%, rgba(240,192,64,0.09) 0%, transparent 65%),
-      repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(240,192,64,0.015) 40px, rgba(240,192,64,0.015) 41px),
-      repeating-linear-gradient(-45deg, transparent, transparent 80px, rgba(212,160,23,0.01) 80px, rgba(212,160,23,0.01) 81px)
+      /* Sharp intersecting grid with 3x thicker lines and tighter 30px spacing */
+      repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(240,192,64,0.04) 30px, rgba(240,192,64,0.04) 33px),
+      repeating-linear-gradient(-45deg, transparent, transparent 30px, rgba(212,160,23,0.03) 30px, rgba(212,160,23,0.03) 33px)
     `,
   }} />
 </div>

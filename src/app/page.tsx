@@ -1,7 +1,8 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
-import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import type { Property } from '@/types'
 
 async function getFeaturedProperties() {
   const supabase = await createClient()
@@ -20,11 +21,18 @@ async function getFeaturedProperties() {
     .order('created_at', { ascending: false })
     .limit(3)
 
-  return { investors: investors ?? [], homes: homes ?? [] }
+  return {
+    investors: investors ?? [],
+    homes:     homes     ?? [],
+  }
 }
 
-function PropertyCard({ property }: { property: any }) {
-  const image = property.images?.[0]?.url
+function formatPrice(price: number) {
+  return '€' + Number(price).toLocaleString('el-GR')
+}
+
+function PropertyCard({ property }: { property: Property }) {
+  const firstImage = property.images?.[0]?.url
   const tag = property.featured_investor
     ? `Investment · ${property.status === 'for_sale' ? 'For Sale' : 'For Rent'}`
     : `Residence · ${property.status === 'for_sale' ? 'For Sale' : 'For Rent'}`
@@ -32,9 +40,9 @@ function PropertyCard({ property }: { property: any }) {
   return (
     <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>
       <div className="property-card">
-        {image ? (
+        {firstImage ? (
           <img
-            src={image}
+            src={firstImage}
             alt={property.title}
             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
           />
@@ -47,7 +55,7 @@ function PropertyCard({ property }: { property: any }) {
           <span className="property-tag">{tag}</span>
           <div className="property-name">{property.title}</div>
           <div className="property-location">{property.region}</div>
-          <div className="property-price">€{Number(property.price).toLocaleString()}</div>
+          <div className="property-price">{formatPrice(property.price)}</div>
           <div className="property-cta">View Property</div>
         </div>
       </div>
@@ -55,34 +63,19 @@ function PropertyCard({ property }: { property: any }) {
   )
 }
 
-function PlaceholderCard({ tag, name, location, price }: { tag: string; name: string; location: string; price: string }) {
+function EmptyCard({ label }: { label: string }) {
   return (
     <div className="property-card">
       <div className="property-placeholder">
         <div className="placeholder-icon">HS</div>
       </div>
       <div className="property-overlay">
-        <span className="property-tag">{tag}</span>
-        <div className="property-name">{name}</div>
-        <div className="property-location">{location}</div>
-        <div className="property-price">{price}</div>
-        <div className="property-cta">View Property</div>
+        <span className="property-tag">{label}</span>
+        <div className="property-name" style={{ color: '#888888', fontSize: '14px' }}>Coming Soon</div>
       </div>
     </div>
   )
 }
-
-const placeholderInvestors = [
-  { tag: 'Investment · High Yield',    name: 'Prime Commercial Block',       location: 'Athens, Greece',    price: '€2,400,000' },
-  { tag: 'Investment · Rental Income', name: 'Boutique Apartment Portfolio', location: 'Mykonos, Greece',   price: '€1,850,000' },
-  { tag: 'Investment · Development',   name: 'Seafront Development Land',    location: 'Santorini, Greece', price: '€3,200,000' },
-]
-
-const placeholderHomes = [
-  { tag: 'Residence · Villa',     name: 'Cliffside Infinity Villa', location: 'Santorini, Greece',   price: '€4,750,000' },
-  { tag: 'Residence · Penthouse', name: 'Athenian Sky Penthouse',   location: 'Kolonaki, Athens',    price: '€2,100,000' },
-  { tag: 'Residence · Estate',    name: 'Riviera Private Estate',   location: 'Vouliagmeni, Athens', price: '€6,500,000' },
-]
 
 export default async function Home() {
   const { investors, homes } = await getFeaturedProperties()
@@ -115,11 +108,12 @@ export default async function Home() {
           `,
         }} />
 
-        {/* Monogram */}
+        {/* HS Monogram */}
         <div className="fade-up" style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(80px, 12vw, 140px)',
-          fontWeight: 600, lineHeight: 1,
+          fontWeight: 600,
+          lineHeight: 1,
           color: '#F0C040',
           textShadow: '0 0 60px rgba(212,160,23,0.4), 0 2px 4px rgba(0,0,0,0.8)',
           letterSpacing: '-4px',
@@ -138,32 +132,36 @@ export default async function Home() {
         <h1 className="fade-up delay-1" style={{
           fontFamily: 'Cormorant Garamond, serif',
           fontSize: 'clamp(28px, 4vw, 48px)',
-          fontWeight: 300, letterSpacing: '6px',
+          fontWeight: 300,
+          letterSpacing: '6px',
           textTransform: 'uppercase',
-          color: '#F5F0E8', marginBottom: '12px',
-        }}>
-          HS Luxury Properties
-        </h1>
+          color: '#F5F0E8',
+          marginBottom: '12px',
+        }}>HS Luxury Properties</h1>
 
         {/* Slogan */}
         <p className="fade-up delay-2" style={{
-          fontSize: '11px', letterSpacing: '5px',
-          textTransform: 'uppercase', color: '#F0C040',
-          marginBottom: '16px', fontWeight: 400,
+          fontSize: '11px',
+          letterSpacing: '5px',
+          textTransform: 'uppercase',
+          color: '#F0C040',
+          marginBottom: '16px',
+          fontWeight: 400,
           fontFamily: 'Montserrat, sans-serif',
-        }}>
-          Luxury Properties · Extraordinary Living
-        </p>
+        }}>Luxury Properties · Extraordinary Living</p>
 
         {/* About paragraph */}
         <p className="fade-up delay-2" style={{
-          fontSize: '13px', color: '#888888',
-          maxWidth: '520px', lineHeight: 1.8,
-          fontFamily: 'Montserrat, sans-serif',
+          fontSize: '13px',
+          color: '#888888',
+          maxWidth: '520px',
+          lineHeight: 1.8,
           marginBottom: '48px',
+          fontFamily: 'Montserrat, sans-serif',
+          fontWeight: 300,
         }}>
-          Connecting discerning clients with the world&#39;s most exceptional properties.
-          Discretion, expertise, and extraordinary results.
+          Connecting discerning clients with the world&#39;s most exceptional
+          properties. Discretion, expertise, and extraordinary results.
         </p>
 
         {/* CTA */}
@@ -173,29 +171,48 @@ export default async function Home() {
 
         {/* Featured listings */}
         <div className="fade-up delay-4" style={{ width: '100%', maxWidth: '1200px', marginTop: '100px' }}>
-          <p className="section-label" style={{ textAlign: 'center', marginBottom: '48px' }}>Featured Listings</p>
 
           {/* For Investors */}
-          <p style={{ fontSize: '10px', letterSpacing: '4px', textTransform: 'uppercase', color: '#F0C040', marginBottom: '16px', fontWeight: 400, fontFamily: 'Montserrat, sans-serif' }}>
-            For Investors
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '40px' }}>
-            {investors.length > 0
-              ? investors.map(p => <PropertyCard key={p.id} property={p} />)
-              : placeholderInvestors.map(p => <PlaceholderCard key={p.name} {...p} />)
-            }
+          <div style={{ marginBottom: '60px' }}>
+            <p style={{ fontSize: '10px', letterSpacing: '5px', textTransform: 'uppercase', color: '#888888', marginBottom: '8px', fontFamily: 'Montserrat, sans-serif' }}>
+              Featured
+            </p>
+            <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 300, color: '#F5F0E8', letterSpacing: '3px', marginBottom: '8px' }}>
+              For Investors
+            </h2>
+            <div style={{ width: '40px', height: '1px', background: '#F0C040', marginBottom: '32px' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {investors.length > 0
+                ? investors.map(p => <PropertyCard key={p.id} property={p as Property} />)
+                : [0,1,2].map(i => <EmptyCard key={i} label="Investment Property" />)
+              }
+            </div>
           </div>
 
           {/* For Homeowners */}
-          <p style={{ fontSize: '10px', letterSpacing: '4px', textTransform: 'uppercase', color: '#F0C040', marginBottom: '16px', marginTop: '40px', fontWeight: 400, fontFamily: 'Montserrat, sans-serif' }}>
-            For Homeowners
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            {homes.length > 0
-              ? homes.map(p => <PropertyCard key={p.id} property={p} />)
-              : placeholderHomes.map(p => <PlaceholderCard key={p.name} {...p} />)
-            }
+          <div>
+            <p style={{ fontSize: '10px', letterSpacing: '5px', textTransform: 'uppercase', color: '#888888', marginBottom: '8px', fontFamily: 'Montserrat, sans-serif' }}>
+              Featured
+            </p>
+            <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 300, color: '#F5F0E8', letterSpacing: '3px', marginBottom: '8px' }}>
+              For Homeowners
+            </h2>
+            <div style={{ width: '40px', height: '1px', background: '#F0C040', marginBottom: '32px' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+              {homes.length > 0
+                ? homes.map(p => <PropertyCard key={p.id} property={p as Property} />)
+                : [0,1,2].map(i => <EmptyCard key={i} label="Residential Property" />)
+              }
+            </div>
           </div>
+
+          {/* View all */}
+          <div style={{ textAlign: 'center', marginTop: '60px' }}>
+            <Link href="/properties" className="hero-cta">
+              <span>View All Properties</span>
+            </Link>
+          </div>
+
         </div>
       </section>
 

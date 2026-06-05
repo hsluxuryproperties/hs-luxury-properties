@@ -104,29 +104,28 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-      {/* Haigh Spanoudakis Real Estate Inspired Luxury Art-Deco Pattern */}
+      {/* Haigh Spanoudakis Real Estate Inspired Luxury Art-Deco Pattern — High Contrast */}
 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-  {/* The Main Art-Deco Line Layout */}
+  {/* Increased overall opacity from 0.35 to 0.65 for crisp visibility */}
   <div style={{
     position: 'absolute', 
     inset: 0,
-    opacity: 0.35, /* Softens the lines exactly like the image */
+    opacity: 0.65, 
     background: `
-      /* Sharp multi-angled fine gold line overlays */
-      repeating-linear-gradient(30deg, transparent, transparent 50px, rgba(240,192,64,0.15) 50px, rgba(240,192,64,0.15) 51px),
-      repeating-linear-gradient(-30deg, transparent, transparent 50px, rgba(212,160,23,0.1) 50px, rgba(212,160,23,0.1) 51px),
-      repeating-linear-gradient(75deg, transparent, transparent 70px, rgba(240,192,64,0.08) 70px, rgba(240,192,64,0.08) 71px),
-      repeating-linear-gradient(-75deg, transparent, transparent 70px, rgba(212,160,23,0.08) 70px, rgba(212,160,23,0.08) 71px)
+      repeating-linear-gradient(30deg, transparent, transparent 50px, rgba(240,192,64,0.22) 50px, rgba(240,192,64,0.22) 51px),
+      repeating-linear-gradient(-30deg, transparent, transparent 50px, rgba(212,160,23,0.18) 50px, rgba(212,160,23,0.18) 51px),
+      repeating-linear-gradient(75deg, transparent, transparent 70px, rgba(240,192,64,0.15) 70px, rgba(240,192,64,0.15) 71px),
+      repeating-linear-gradient(-75deg, transparent, transparent 70px, rgba(212,160,23,0.15) 70px, rgba(212,160,23,0.15) 71px)
     `,
   }} />
 
-  {/* The Vignette: Vignette masking that hides the lines in the center, keeping them strictly on the edges */}
+  {/* Adjusted Vignette: Pushed the transparent boundaries back so lines show significantly more across the viewport */}
   <div style={{
     position: 'absolute',
     inset: 0,
-    background: 'radial-gradient(circle at 50% 50%, #0A0A0A 20%, rgba(10,10,10,0.85) 50%, transparent 95%)',
+    background: 'radial-gradient(circle at 50% 50%, transparent 10%, rgba(10,10,10,0.4) 40%, #0A0A0A 85%)',
   }} />
-        </div>
+</div>
 
         {/* Replaced Monogram text with Image component  */}
         <div 

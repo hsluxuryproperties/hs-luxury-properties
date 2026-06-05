@@ -1,6 +1,7 @@
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import type { Property } from '@/types'
 
@@ -113,18 +114,17 @@ export default async function Home() {
           `,
         }} />
 
-        {/* HS Monogram */}
-        <div className="fade-up" style={{
-          fontFamily: 'Cormorant Garamond, serif',
-          fontSize: 'clamp(80px, 12vw, 140px)',
-          fontWeight: 600,
-          lineHeight: 1,
-          color: '#F0C040',
-          textShadow: '0 0 60px rgba(212,160,23,0.4), 0 2px 4px rgba(0,0,0,0.8)',
-          letterSpacing: '-4px',
-          marginBottom: '32px',
-          position: 'relative',
-        }}>HS</div>
+        {/* Replaced Monogram text with Image component */}
+<div className="fade-up" style={{ marginBottom: '32px', position: 'relative' }}>
+  <Image 
+    src="/logo.png" 
+    alt="HS Luxury Properties Logo" 
+    width={240} 
+    height={80} 
+    style={{ objectFit: 'contain' }}
+    priority 
+  />
+</div>
 
         {/* Divider */}
         <div className="fade-up delay-1" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>

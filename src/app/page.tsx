@@ -11,6 +11,7 @@ async function getFeaturedProperties() {
     .from('properties')
     .select('*, images:property_images(*)')
     .eq('featured_investor', true)
+    .eq('active', true)
     .order('created_at', { ascending: false })
     .limit(3)
 
@@ -18,6 +19,7 @@ async function getFeaturedProperties() {
     .from('properties')
     .select('*, images:property_images(*)')
     .eq('featured_home', true)
+    .eq('active', true)
     .order('created_at', { ascending: false })
     .limit(3)
 
@@ -53,6 +55,9 @@ function PropertyCard({ property }: { property: Property }) {
         )}
         <div className="property-overlay">
           <span className="property-tag">{tag}</span>
+          <div style={{ fontSize: '10px', letterSpacing: '2px', color: 'rgba(240,192,64,0.7)', fontFamily: 'Montserrat, sans-serif', marginBottom: '4px' }}>
+            {property.property_code}
+          </div>
           <div className="property-name">{property.title}</div>
           <div className="property-location">{property.region}</div>
           <div className="property-price">{formatPrice(property.price)}</div>

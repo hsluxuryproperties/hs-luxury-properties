@@ -37,7 +37,7 @@ export default function PropertyGallery({
           <img
             src={images[active].url}
             alt={title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s' }}
+            style={{ width: '100%', height: '100%', objectFit: 'contain', transition: 'opacity 0.3s' }}
           />
 
           {/* Image counter */}

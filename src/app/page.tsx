@@ -104,21 +104,33 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-      {/* Stable Horizontal Gold Architectural Pinstripes */}
+      {/* Haigh Spanoudakis Real Estate Inspired Luxury Art-Deco Pattern */}
 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+  {/* The Main Art-Deco Line Layout */}
   <div style={{
     position: 'absolute', 
     inset: 0,
+    opacity: 0.35, /* Softens the lines exactly like the image */
     background: `
-      /* Purely horizontal lines, spaced 80px apart, 2px thick */
-      repeating-linear-gradient(180deg, transparent, transparent 80px, rgba(240,192,64,0.04) 80px, rgba(240,192,64,0.04) 82px)
+      /* Sharp multi-angled fine gold line overlays */
+      repeating-linear-gradient(30deg, transparent, transparent 50px, rgba(240,192,64,0.15) 50px, rgba(240,192,64,0.15) 51px),
+      repeating-linear-gradient(-30deg, transparent, transparent 50px, rgba(212,160,23,0.1) 50px, rgba(212,160,23,0.1) 51px),
+      repeating-linear-gradient(75deg, transparent, transparent 70px, rgba(240,192,64,0.08) 70px, rgba(240,192,64,0.08) 71px),
+      repeating-linear-gradient(-75deg, transparent, transparent 70px, rgba(212,160,23,0.08) 70px, rgba(212,160,23,0.08) 71px)
     `,
   }} />
-</div>
+
+  {/* The Vignette: Vignette masking that hides the lines in the center, keeping them strictly on the edges */}
+  <div style={{
+    position: 'absolute',
+    inset: 0,
+    background: 'radial-gradient(circle at 50% 50%, #0A0A0A 20%, rgba(10,10,10,0.85) 50%, transparent 95%)',
+  }} />
+        </div>
 
         {/* Replaced Monogram text with Image component  */}
-<div 
-  className="fade-up" 
+        <div 
+          className="fade-up" 
   style={{ 
     marginBottom: '32px', 
     position: 'relative',

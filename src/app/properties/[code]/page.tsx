@@ -10,14 +10,14 @@ import type { Metadata } from 'next'
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ code: string }>
 }): Promise<Metadata> {
-  const { id } = await params
+  const { code } = await params
   const supabase = await createClient()
   const { data } = await supabase
     .from('properties')
     .select('title, region, price')
-    .eq('id', id)
+    .eq('property_code', code.toUpperCase())
     .single()
 
   if (!data) return { title: 'Property Not Found' }
@@ -31,15 +31,16 @@ export async function generateMetadata({
 export default async function PropertyPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: Promise<{ code: string }>
 }) {
-  const { id } = await params
+  const { code } = await params
   const supabase = await createClient()
 
   const { data } = await supabase
     .from('properties')
     .select('*, images:property_images(*)')
-    .eq('id', id)
+    .eq('property_code', code.toUpperCase())
+    .eq('active', true)
     .order('display_order', { referencedTable: 'property_images', ascending: true })
     .single()
 

@@ -14,8 +14,20 @@ function PropertyCard({ property }: { property: Property }) {
   const images = property.images ?? []
   const hasImages = images.length > 0
 
+  function prev(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setImgIndex(i => (i - 1 + images.length) % images.length)
+  }
+
+  function next(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setImgIndex(i => (i + 1) % images.length)
+  }
+
   return (
-    <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+    <div style={{ position: 'relative', cursor: 'pointer' }}>
       <div className="property-card" style={{ aspectRatio: '3/4' }}>
 
         {/* Image carousel */}
@@ -29,18 +41,18 @@ function PropertyCard({ property }: { property: Property }) {
             {images.length > 1 && (
               <>
                 <button
-                  onClick={e => { e.preventDefault(); setImgIndex(i => (i - 1 + images.length) % images.length) }}
-                  style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(212,160,23,0.3)', color: '#F0C040', width: '28px', height: '28px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={prev}
+                  style={{ position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(212,160,23,0.3)', color: '#F0C040', width: '28px', height: '28px', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
                 >
                   ‹
                 </button>
                 <button
-                  onClick={e => { e.preventDefault(); setImgIndex(i => (i + 1) % images.length) }}
-                  style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(212,160,23,0.3)', color: '#F0C040', width: '28px', height: '28px', cursor: 'pointer', fontSize: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  onClick={next}
+                  style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(212,160,23,0.3)', color: '#F0C040', width: '28px', height: '28px', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}
                 >
                   ›
                 </button>
-                <div style={{ position: 'absolute', bottom: '80px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px' }}>
+                <div style={{ position: 'absolute', bottom: '80px', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '4px', zIndex: 10 }}>
                   {images.map((_, i) => (
                     <div key={i} style={{ width: '4px', height: '4px', borderRadius: '50%', background: i === imgIndex ? '#F0C040' : 'rgba(255,255,255,0.3)', transition: 'background 0.2s' }} />
                   ))}
@@ -54,25 +66,27 @@ function PropertyCard({ property }: { property: Property }) {
           </div>
         )}
 
-        {/* Overlay */}
-        <div className="property-overlay">
-          <span className="property-tag">
-            {property.status === 'for_sale' ? 'For Sale' : 'For Rent'} · {property.property_code}
-          </span>
-          <div className="property-name">{property.title}</div>
-          <div className="property-location">{property.region}</div>
-          <div style={{ display: 'flex', gap: '12px', marginBottom: '4px', flexWrap: 'wrap' }}>
-            {property.bedrooms   != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.bedrooms} bed</span>}
-            {property.bathrooms  != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.bathrooms} bath</span>}
-            {property.sqm        != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.sqm} m²</span>}
-            {property.floor      != null && <span style={{ fontSize: '10px', color: '#888888' }}>Floor {property.floor}</span>}
+        {/* Overlay — clicking this navigates */}
+        <Link href={`/properties/${property.id}`} style={{ textDecoration: 'none' }}>
+          <div className="property-overlay">
+            <span className="property-tag">
+              {property.status === 'for_sale' ? 'For Sale' : 'For Rent'} · {property.property_code}
+            </span>
+            <div className="property-name">{property.title}</div>
+            <div className="property-location">{property.region}</div>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '4px', flexWrap: 'wrap' }}>
+              {property.bedrooms  != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.bedrooms} bed</span>}
+              {property.bathrooms != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.bathrooms} bath</span>}
+              {property.sqm       != null && <span style={{ fontSize: '10px', color: '#888888' }}>{property.sqm} m²</span>}
+              {property.floor     != null && <span style={{ fontSize: '10px', color: '#888888' }}>Floor {property.floor}</span>}
+            </div>
+            <div className="property-price">€{Number(property.price).toLocaleString('el-GR')}</div>
+            <div className="property-cta">View Property</div>
           </div>
-          <div className="property-price">€{Number(property.price).toLocaleString('el-GR')}</div>
-          <div className="property-cta">View Property</div>
-        </div>
+        </Link>
 
       </div>
-    </Link>
+    </div>
   )
 }
 

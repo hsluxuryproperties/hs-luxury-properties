@@ -104,15 +104,14 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-      {/* Crisp Geometric Luxury Gold Line Grid */}
+      {/* Stable Horizontal Gold Architectural Pinstripes */}
 <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
   <div style={{
     position: 'absolute', 
     inset: 0,
     background: `
-      /* Sharp intersecting grid with 3x thicker lines and tighter 30px spacing */
-      repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(240,192,64,0.04) 30px, rgba(240,192,64,0.04) 33px),
-      repeating-linear-gradient(-45deg, transparent, transparent 30px, rgba(212,160,23,0.03) 30px, rgba(212,160,23,0.03) 33px)
+      /* Purely horizontal lines, spaced 80px apart, 2px thick */
+      repeating-linear-gradient(180deg, transparent, transparent 80px, rgba(240,192,64,0.04) 80px, rgba(240,192,64,0.04) 82px)
     `,
   }} />
 </div>

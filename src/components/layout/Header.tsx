@@ -53,11 +53,10 @@ export default function Header() {
             letterSpacing: '3px',
             lineHeight: 1,
           }}>
-            Luxury Properties
           </span>
           <span style={{
             fontFamily: 'Montserrat, sans-serif',
-            fontSize: '9px',
+            fontSize: '17px',
             letterSpacing: '4px',
             textTransform: 'uppercase',
             color: '#D4A017',

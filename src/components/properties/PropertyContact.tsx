@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 type Locale = 'en' | 'gr'
 function useLocale(): Locale {
-  const p = usePathname()
-  return p.startsWith('/gr') ? 'gr' : 'en'
+  const [locale, setLocale] = useState<Locale>('en')
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)hs_locale=([^;]+)/)
+    setLocale((match?.[1] as Locale) ?? 'en')
+  }, [])
+  return locale
 }
 const T = {
   en: {

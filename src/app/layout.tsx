@@ -13,8 +13,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.ico?v=4" />
-        <link rel="shortcut icon" href="/icon.ico?v=4" />
+        <link rel="icon" href="/icon.ico?v=5" />
+        <link rel="shortcut icon" href="/icon.ico?v=5" />
       </head>
       <body>{children}</body>
     </html>

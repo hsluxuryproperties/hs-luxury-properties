@@ -76,7 +76,6 @@ export default function Header() {
     transition:     'color 0.3s',
   }
 
-  const currentFlag  = locale === 'en' ? '🇬🇧' : '🇬🇷'
   const currentLabel = locale === 'en' ? 'EN' : 'ΕΛ'
 
   return (
@@ -126,7 +125,6 @@ export default function Header() {
             onToggle={() => setLangOpen(o => !o)}
             onSwitch={handleLocale}
             dropRef={langRef}
-            currentFlag={currentFlag}
             currentLabel={currentLabel}
           />
         </div>
@@ -139,7 +137,6 @@ export default function Header() {
             onToggle={() => setLangOpen(o => !o)}
             onSwitch={handleLocale}
             dropRef={langRefMobile}
-            currentFlag={currentFlag}
             currentLabel={currentLabel}
           />
 
@@ -209,20 +206,21 @@ export default function Header() {
 }
 
 function LanguageDropdown({
-  locale, open, onToggle, onSwitch, dropRef, currentFlag, currentLabel,
+  locale, open, onToggle, onSwitch, dropRef, currentLabel,
 }: {
   locale:       Locale
   open:         boolean
   onToggle:     () => void
   onSwitch:     (l: Locale) => void
   dropRef:      React.RefObject<HTMLDivElement | null>
-  currentFlag:  string
   currentLabel: string
 }) {
-  const options: { locale: Locale; flag: string; label: string }[] = [
-    { locale: 'en', flag: '🇬🇧', label: 'EN' },
-    { locale: 'gr', flag: '🇬🇷', label: 'GR' },
+  const options: { locale: Locale; code: string; label: string }[] = [
+    { locale: 'en', code: 'gb', label: 'EN' },
+    { locale: 'gr', code: 'gr', label: 'GR' },
   ]
+
+  const currentCode = locale === 'en' ? 'gb' : 'gr'
 
   return (
     <div ref={dropRef} style={{ position: 'relative' }}>
@@ -246,7 +244,13 @@ function LanguageDropdown({
           transition:    'all 0.2s',
         }}
       >
-        <span style={{ fontSize: '15px', lineHeight: 1 }}>{currentFlag}</span>
+        <img
+          src={`https://flagcdn.com/20x15/${currentCode}.png`}
+          width={20}
+          height={15}
+          alt={locale === 'en' ? 'English' : 'Greek'}
+          style={{ display: 'block', borderRadius: '1px' }}
+        />
         <span>{currentLabel}</span>
         <span style={{
           display:    'inline-block',
@@ -303,7 +307,13 @@ function LanguageDropdown({
                   if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
                 }}
               >
-                <span style={{ fontSize: '16px', lineHeight: 1 }}>{opt.flag}</span>
+                <img
+                  src={`https://flagcdn.com/20x15/${opt.code}.png`}
+                  width={20}
+                  height={15}
+                  alt={opt.label}
+                  style={{ display: 'block', borderRadius: '1px' }}
+                />
                 <span>{opt.label}</span>
                 {active && <span style={{ marginLeft: 'auto', color: '#F0C040', fontSize: '10px' }}>✓</span>}
               </button>

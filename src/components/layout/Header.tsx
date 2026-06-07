@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-// ── i18n ──────────────────────────────────────────────────────────────────────
 export type Locale = 'en' | 'gr'
 
 export function getLocale(): Locale {
@@ -32,7 +31,6 @@ const NAV: Record<Locale, { label: string; href: string }[]> = {
   ],
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [locale,     setLocale]     = useState<Locale>('en')
@@ -68,14 +66,14 @@ export default function Header() {
   const navLinks = NAV[locale]
 
   const linkStyle: React.CSSProperties = {
-    fontFamily:    'Montserrat, sans-serif',
-    fontSize:      '10px',
-    letterSpacing: '3px',
-    textTransform: 'uppercase',
-    color:         '#DDDDDD',
-    textDecoration:'none',
-    whiteSpace:    'nowrap',
-    transition:    'color 0.3s',
+    fontFamily:     'Montserrat, sans-serif',
+    fontSize:       '10px',
+    letterSpacing:  '3px',
+    textTransform:  'uppercase',
+    color:          '#DDDDDD',
+    textDecoration: 'none',
+    whiteSpace:     'nowrap',
+    transition:     'color 0.3s',
   }
 
   const currentFlag  = locale === 'en' ? '🇬🇧' : '🇬🇷'
@@ -84,17 +82,17 @@ export default function Header() {
   return (
     <>
       <nav style={{
-        position:      'fixed',
+        position:       'fixed',
         top: 0, left: 0, right: 0,
-        zIndex:        100,
-        display:       'flex',
-        alignItems:    'center',
-        justifyContent:'space-between',
-        padding:       '0 48px',
-        height:        '80px',
-        background:    'rgba(10,10,10,0.95)',
-        backdropFilter:'blur(12px)',
-        borderBottom:  '1px solid rgba(212,160,23,0.2)',
+        zIndex:         100,
+        display:        'flex',
+        alignItems:     'center',
+        justifyContent: 'space-between',
+        padding:        '0 48px',
+        height:         '80px',
+        background:     'rgba(10,10,10,0.95)',
+        backdropFilter: 'blur(12px)',
+        borderBottom:   '1px solid rgba(212,160,23,0.2)',
       }}>
 
         {/* Logo */}
@@ -164,15 +162,15 @@ export default function Header() {
       <div
         className="hs-mobile-nav"
         style={{
-          display:       mobileOpen ? 'flex' : 'none',
-          flexDirection: 'column',
-          position:      'fixed',
-          top:           '80px', left:0, right:0,
-          zIndex:        99,
-          background:    'rgba(10,10,10,0.98)',
-          backdropFilter:'blur(12px)',
-          borderBottom:  '1px solid rgba(212,160,23,0.2)',
-          padding:       '24px 32px 32px',
+          display:        mobileOpen ? 'flex' : 'none',
+          flexDirection:  'column',
+          position:       'fixed',
+          top:            '80px', left:0, right:0,
+          zIndex:         99,
+          background:     'rgba(10,10,10,0.98)',
+          backdropFilter: 'blur(12px)',
+          borderBottom:   '1px solid rgba(212,160,23,0.2)',
+          padding:        '8px 32px 16px',
         }}
       >
         {navLinks.map((link, i) => (
@@ -182,10 +180,10 @@ export default function Header() {
             onClick={() => setMobileOpen(false)}
             style={{
               ...linkStyle,
-              fontSize:     '12px',
+              fontSize:     '11px',
               letterSpacing:'2.5px',
-              padding:      '16px 0',
-              borderBottom:  i < navLinks.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
+              padding:      '10px 0',
+              borderBottom: i < navLinks.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
               display:      'block',
             }}
             onMouseEnter={e => (e.currentTarget.style.color = '#F0C040')}
@@ -210,7 +208,6 @@ export default function Header() {
   )
 }
 
-// ── Language Dropdown ─────────────────────────────────────────────────────────
 function LanguageDropdown({
   locale, open, onToggle, onSwitch, dropRef, currentFlag, currentLabel,
 }: {
@@ -281,23 +278,23 @@ function LanguageDropdown({
                 key={opt.locale}
                 onClick={() => onSwitch(opt.locale)}
                 style={{
-                  display:        'flex',
-                  alignItems:     'center',
-                  gap:            '10px',
-                  width:          '100%',
-                  padding:        '11px 16px',
-                  background:     active ? 'rgba(240,192,64,0.08)' : 'transparent',
-                  border:         'none',
-                  borderBottom:   i < options.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
-                  color:          active ? '#F0C040' : '#CCCCCC',
-                  cursor:         'pointer',
-                  fontFamily:     'Montserrat, sans-serif',
-                  fontSize:       '11px',
-                  fontWeight:     active ? 600 : 400,
-                  letterSpacing:  '1.5px',
-                  textTransform:  'uppercase',
-                  textAlign:      'left',
-                  transition:     'background 0.15s',
+                  display:       'flex',
+                  alignItems:    'center',
+                  gap:           '10px',
+                  width:         '100%',
+                  padding:       '11px 16px',
+                  background:    active ? 'rgba(240,192,64,0.08)' : 'transparent',
+                  border:        'none',
+                  borderBottom:  i < options.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
+                  color:         active ? '#F0C040' : '#CCCCCC',
+                  cursor:        'pointer',
+                  fontFamily:    'Montserrat, sans-serif',
+                  fontSize:      '11px',
+                  fontWeight:    active ? 600 : 400,
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  textAlign:     'left',
+                  transition:    'background 0.15s',
                 }}
                 onMouseEnter={e => {
                   if (!active) (e.currentTarget as HTMLButtonElement).style.background = 'rgba(240,192,64,0.05)'

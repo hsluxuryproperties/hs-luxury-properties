@@ -37,17 +37,19 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [locale,     setLocale]     = useState<Locale>('en')
   const [langOpen,   setLangOpen]   = useState(false)
-  const langRef = useRef<HTMLDivElement>(null)
+  const langRef       = useRef<HTMLDivElement>(null)
+  const langRefMobile = useRef<HTMLDivElement>(null)
 
-  // Read locale from cookie on mount
   useEffect(() => {
     setLocale(getLocale())
   }, [])
 
-  // Close lang dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+      if (
+        langRef.current && !langRef.current.contains(e.target as Node) &&
+        langRefMobile.current && !langRefMobile.current.contains(e.target as Node)
+      ) {
         setLangOpen(false)
       }
     }
@@ -76,7 +78,7 @@ export default function Header() {
     transition:    'color 0.3s',
   }
 
-  const currentFlag = locale === 'en' ? '🇬🇧' : '🇬🇷'
+  const currentFlag  = locale === 'en' ? '🇬🇧' : '🇬🇷'
   const currentLabel = locale === 'en' ? 'EN' : 'ΕΛ'
 
   return (
@@ -95,7 +97,7 @@ export default function Header() {
         borderBottom:  '1px solid rgba(212,160,23,0.2)',
       }}>
 
-        {/* ── Logo ── */}
+        {/* Logo */}
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:'14px', textDecoration:'none', flexShrink:0 }}>
           <Image src="/logo.png" alt="HS Luxury Properties" width={48} height={48} style={{ objectFit:'contain' }} priority />
           <div style={{ display:'flex', flexDirection:'column', gap:'1px' }}>
@@ -106,7 +108,7 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* ── Desktop nav ── */}
+        {/* Desktop nav */}
         <div className="hs-desktop-nav" style={{ display:'flex', alignItems:'center', gap:'40px' }}>
           <ul style={{ display:'flex', gap:'40px', listStyle:'none', alignItems:'center', margin:0, padding:0 }}>
             {navLinks.map(link => (
@@ -123,7 +125,6 @@ export default function Header() {
             ))}
           </ul>
 
-          {/* Language dropdown */}
           <LanguageDropdown
             locale={locale}
             open={langOpen}
@@ -135,14 +136,14 @@ export default function Header() {
           />
         </div>
 
-        {/* ── Mobile: lang + hamburger ── */}
+        {/* Mobile: lang + hamburger */}
         <div className="hs-mobile-nav" style={{ display:'none', alignItems:'center', gap:'12px' }}>
           <LanguageDropdown
             locale={locale}
             open={langOpen}
             onToggle={() => setLangOpen(o => !o)}
             onSwitch={handleLocale}
-            dropRef={langRef}
+            dropRef={langRefMobile}
             currentFlag={currentFlag}
             currentLabel={currentLabel}
           />
@@ -159,7 +160,7 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* ── Mobile dropdown menu ── */}
+      {/* Mobile dropdown menu */}
       <div
         className="hs-mobile-nav"
         style={{
@@ -228,7 +229,6 @@ function LanguageDropdown({
 
   return (
     <div ref={dropRef} style={{ position: 'relative' }}>
-      {/* Trigger button */}
       <button
         onClick={onToggle}
         style={{
@@ -251,7 +251,6 @@ function LanguageDropdown({
       >
         <span style={{ fontSize: '15px', lineHeight: 1 }}>{currentFlag}</span>
         <span>{currentLabel}</span>
-        {/* Chevron */}
         <span style={{
           display:    'inline-block',
           marginLeft: '2px',
@@ -262,7 +261,6 @@ function LanguageDropdown({
         }}>▼</span>
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div style={{
           position:     'absolute',

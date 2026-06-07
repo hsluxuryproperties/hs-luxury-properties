@@ -7,6 +7,10 @@ export const metadata: Metadata = {
     template: '%s | HS Luxury Properties',
   },
   description: 'Connecting discerning clients with the world\'s most exceptional properties. Discretion, expertise, and extraordinary results.',
+   icons: {
+    icon: '/logo.png',
+    apple: '/logo.png',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

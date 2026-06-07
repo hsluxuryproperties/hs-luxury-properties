@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 
 // ── i18n ──────────────────────────────────────────────────────────────────────
 export type Locale = 'en' | 'gr'
@@ -39,7 +38,6 @@ export default function Header() {
   const [locale,     setLocale]     = useState<Locale>('en')
   const [langOpen,   setLangOpen]   = useState(false)
   const langRef = useRef<HTMLDivElement>(null)
-  const router  = useRouter()
 
   // Read locale from cookie on mount
   useEffect(() => {
@@ -62,7 +60,7 @@ export default function Header() {
     setLocale(next)
     setLangOpen(false)
     setMobileOpen(false)
-    router.refresh()
+    window.location.reload()
   }
 
   const navLinks = NAV[locale]

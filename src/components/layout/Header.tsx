@@ -96,14 +96,11 @@ export default function Header() {
       }}>
 
         {/* Logo */}
-        <Link href="/" style={{ display:'flex', alignItems:'center', gap:'14px', textDecoration:'none', flexShrink:0 }}>
-          <Image src="/logo.png" alt="HS Luxury Properties" width={48} height={48} style={{ objectFit:'contain' }} priority />
-          <div style={{ display:'flex', flexDirection:'column', gap:'1px' }}>
-            <span style={{ fontFamily:'Cormorant Garamond, serif', fontSize:'22px', fontWeight:600, color:'#F0C040', letterSpacing:'3px', lineHeight:1 }} />
-            <span style={{ fontFamily:'Montserrat, sans-serif', fontSize:'17px', letterSpacing:'4px', textTransform:'uppercase', color:'#D4A017', lineHeight:1 }}>
-              Luxury Properties
-            </span>
-          </div>
+        <Link href="/" style={{ display:'flex', alignItems:'center', gap:'10px', textDecoration:'none', flexShrink:0 }}>
+          <Image src="/logo.png" alt="HS Luxury Properties" width={40} height={40} style={{ objectFit:'contain' }} priority />
+          <span className="hs-logo-text" style={{ fontFamily:'Montserrat, sans-serif', fontSize:'13px', letterSpacing:'3px', textTransform:'uppercase', color:'#D4A017', lineHeight:1 }}>
+            Luxury Properties
+          </span>
         </Link>
 
         {/* Desktop nav */}
@@ -135,7 +132,7 @@ export default function Header() {
         </div>
 
         {/* Mobile: lang + hamburger */}
-        <div className="hs-mobile-nav" style={{ display:'none', alignItems:'center', gap:'12px' }}>
+        <div className="hs-mobile-nav" style={{ display:'none', alignItems:'center', gap:'8px' }}>
           <LanguageDropdown
             locale={locale}
             open={langOpen}
@@ -149,56 +146,59 @@ export default function Header() {
           <button
             onClick={() => setMobileOpen(o => !o)}
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            style={{ background:'none', border:'none', cursor:'pointer', padding:'6px', display:'flex', flexDirection:'column', gap:'5px', justifyContent:'center' }}
+            style={{ background:'none', border:'none', cursor:'pointer', padding:'6px', display:'flex', flexDirection:'column', gap:'5px', justifyContent:'center', flexShrink:0 }}
           >
-            <span style={{ display:'block', width:'24px', height:'2px', background:'#F0C040', transition:'transform 0.3s, opacity 0.3s', transform: mobileOpen ? 'rotate(45deg) translate(5px,5px)' : 'none' }} />
-            <span style={{ display:'block', width:'24px', height:'2px', background:'#F0C040', transition:'opacity 0.3s', opacity: mobileOpen ? 0 : 1 }} />
-            <span style={{ display:'block', width:'24px', height:'2px', background:'#F0C040', transition:'transform 0.3s, opacity 0.3s', transform: mobileOpen ? 'rotate(-45deg) translate(5px,-5px)' : 'none' }} />
+            <span style={{ display:'block', width:'22px', height:'2px', background:'#F0C040', transition:'transform 0.3s, opacity 0.3s', transform: mobileOpen ? 'rotate(45deg) translate(5px,5px)' : 'none' }} />
+            <span style={{ display:'block', width:'22px', height:'2px', background:'#F0C040', transition:'opacity 0.3s', opacity: mobileOpen ? 0 : 1 }} />
+            <span style={{ display:'block', width:'22px', height:'2px', background:'#F0C040', transition:'transform 0.3s, opacity 0.3s', transform: mobileOpen ? 'rotate(-45deg) translate(5px,-5px)' : 'none' }} />
           </button>
         </div>
       </nav>
 
-      {/* Mobile dropdown menu */}
-      <div
-        className="hs-mobile-nav"
-        style={{
-          display:        mobileOpen ? 'flex' : 'none',
-          flexDirection:  'column',
-          position:       'fixed',
-          top:            '80px', left:0, right:0,
-          zIndex:         99,
-          background:     'rgba(10,10,10,0.98)',
-          backdropFilter: 'blur(12px)',
-          borderBottom:   '1px solid rgba(212,160,23,0.2)',
-          padding:        '8px 32px 16px',
-        }}
-      >
-        {navLinks.map((link, i) => (
-          <Link
-            key={link.label}
-            href={link.href}
-            onClick={() => setMobileOpen(false)}
-            style={{
-              ...linkStyle,
-              fontSize:     '11px',
-              letterSpacing:'2.5px',
-              padding:      '10px 0',
-              borderBottom: i < navLinks.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
-              display:      'block',
-            }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#F0C040')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#DDDDDD')}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </div>
+      {/* Mobile dropdown menu — only rendered when open */}
+      {mobileOpen && (
+        <div
+          className="hs-mobile-nav"
+          style={{
+            display:        'flex',
+            flexDirection:  'column',
+            position:       'fixed',
+            top:            '80px', left:0, right:0,
+            zIndex:         99,
+            background:     'rgba(10,10,10,0.98)',
+            backdropFilter: 'blur(12px)',
+            borderBottom:   '1px solid rgba(212,160,23,0.2)',
+            padding:        '8px 24px 16px',
+          }}
+        >
+          {navLinks.map((link, i) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                ...linkStyle,
+                fontSize:     '11px',
+                letterSpacing:'2.5px',
+                padding:      '12px 0',
+                borderBottom: i < navLinks.length - 1 ? '1px solid rgba(212,160,23,0.1)' : 'none',
+                display:      'block',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#F0C040')}
+              onMouseLeave={e => (e.currentTarget.style.color = '#DDDDDD')}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <style>{`
         @media (max-width: 768px) {
-          .hs-desktop-nav { display: none !important; }
-          .hs-mobile-nav  { display: flex !important; }
-          nav { padding: 0 20px !important; }
+          .hs-desktop-nav  { display: none !important; }
+          .hs-mobile-nav   { display: flex !important; }
+          .hs-logo-text    { display: none !important; }
+          nav              { padding: 0 16px !important; }
         }
         @media (min-width: 769px) {
           .hs-mobile-nav { display: none !important; }
@@ -231,8 +231,8 @@ function LanguageDropdown({
         style={{
           display:       'flex',
           alignItems:    'center',
-          gap:           '7px',
-          padding:       '6px 12px',
+          gap:           '6px',
+          padding:       '5px 10px',
           background:    open ? 'rgba(240,192,64,0.1)' : 'transparent',
           border:        '1px solid rgba(212,160,23,0.35)',
           borderRadius:  '4px',

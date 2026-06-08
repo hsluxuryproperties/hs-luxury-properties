@@ -38,7 +38,7 @@ export default function PropertyCard({ property }: { property: any }) {
           </div>
 
           {/* Specs */}
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: property.description ? '14px' : '0' }}>
             {property.region && (
               <span style={{ fontSize: '11px', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
                 📍 {property.region}
@@ -65,6 +65,26 @@ export default function PropertyCard({ property }: { property: any }) {
               </span>
             )}
           </div>
+
+          {/* Description */}
+          {property.description && (
+            <p style={{
+              fontSize: '12px',
+              color: '#777777',
+              fontFamily: 'Montserrat, sans-serif',
+              fontWeight: 300,
+              lineHeight: 1.7,
+              margin: 0,
+              display: '-webkit-box',
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              borderTop: '1px solid rgba(212,160,23,0.08)',
+              paddingTop: '12px',
+            }}>
+              {property.description}
+            </p>
+          )}
 
         </div>
       </div>

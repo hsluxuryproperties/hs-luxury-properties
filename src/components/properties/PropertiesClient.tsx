@@ -268,7 +268,7 @@ export default function PropertiesClient({ properties }: { properties: Property[
       <div className="hs-properties-wrap" style={{ padding: '40px 60px' }}>
 
         {/* ── FILTER BAR ── */}
-        <div style={{ background: '#0A0A0A', border: '1px solid rgba(212,160,23,0.15)', padding: '28px', marginBottom: '40px' }}>
+        <div style={{ background: '#0A0A0A', border: '1px solid rgba(212,160,23,0.15)', borderTop: '2px solid rgba(212,160,23,0.5)', padding: '28px', marginBottom: '40px' }}>
 
           {/* Basic filters row */}
           <div className="hs-filter-grid-6">

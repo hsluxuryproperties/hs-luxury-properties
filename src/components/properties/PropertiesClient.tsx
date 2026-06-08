@@ -170,8 +170,8 @@ export default function PropertiesClient({ properties }: { properties: Property[
       bedroomsMin, bedroomsMax, bathroomsMin, bathroomsMax, floorMin, floorMax,
       yearMin, yearMax, heating, view, frames, parking, transport, checkboxes])
 
-  const inputS = {
-    background: 'rgba(255,255,255,0.03)',
+  const inputS: React.CSSProperties = {
+    background: '#1a1a1a',
     border: '1px solid rgba(212,160,23,0.18)',
     color: '#F5F0E8',
     padding: '10px 14px',
@@ -180,12 +180,13 @@ export default function PropertiesClient({ properties }: { properties: Property[
     fontWeight: 300,
     outline: 'none',
     width: '100%',
+    colorScheme: 'dark',
   }
 
-  const labelS = {
+  const labelS: React.CSSProperties = {
     fontSize: '9px',
     letterSpacing: '2px',
-    textTransform: 'uppercase' as const,
+    textTransform: 'uppercase',
     color: '#888888',
     marginBottom: '6px',
     display: 'block',
@@ -200,180 +201,245 @@ export default function PropertiesClient({ properties }: { properties: Property[
   }
 
   return (
-    <div style={{ padding: '40px 60px' }}>
+    <>
+      <style>{`
+        .hs-filter-grid-6 {
+          display: grid;
+          grid-template-columns: repeat(6, 1fr);
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+        .hs-filter-grid-2 {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+        .hs-filter-span2 { grid-column: span 2; }
+        .hs-properties-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+        .hs-checkboxes-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 10px;
+        }
+        select.hs-select {
+          appearance: none;
+          -webkit-appearance: none;
+          background-color: #1a1a1a !important;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23F0C040'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 12px center;
+          padding-right: 32px !important;
+          color: #F5F0E8;
+          cursor: pointer;
+        }
+        select.hs-select option {
+          background-color: #1a1a1a;
+          color: #F5F0E8;
+        }
+        @media (max-width: 768px) {
+          .hs-properties-wrap { padding: 20px 16px !important; }
+          .hs-filter-grid-6 {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .hs-filter-span2 { grid-column: span 2; }
+          .hs-filter-grid-2 {
+            grid-template-columns: 1fr 1fr !important;
+          }
+          .hs-properties-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+          .hs-checkboxes-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .hs-properties-grid {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+      `}</style>
 
-      {/* ── FILTER BAR ── */}
-      <div style={{ background: '#0A0A0A', border: '1px solid rgba(212,160,23,0.15)', padding: '28px', marginBottom: '40px' }}>
+      <div className="hs-properties-wrap" style={{ padding: '40px 60px' }}>
 
-        {/* Basic filters row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px', marginBottom: '20px' }}>
-          <div style={{ gridColumn: 'span 2' }}>
-            <label style={labelS}>Search</label>
-            <input style={inputS} placeholder="Title or region..." value={search} onChange={e => setSearch(e.target.value)} />
+        {/* ── FILTER BAR ── */}
+        <div style={{ background: '#0A0A0A', border: '1px solid rgba(212,160,23,0.15)', padding: '28px', marginBottom: '40px' }}>
+
+          {/* Basic filters row */}
+          <div className="hs-filter-grid-6">
+            <div className="hs-filter-span2">
+              <label style={labelS}>Search</label>
+              <input style={inputS} placeholder="Title or region..." value={search} onChange={e => setSearch(e.target.value)} />
+            </div>
+            <div>
+              <label style={labelS}>Region</label>
+              <select className="hs-select" style={inputS} value={region} onChange={e => setRegion(e.target.value)}>
+                <option value="">All regions</option>
+                {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+              </select>
+            </div>
+            <div>
+              <label style={labelS}>Status</label>
+              <select className="hs-select" style={inputS} value={status} onChange={e => setStatus(e.target.value)}>
+                <option value="">For Sale &amp; Rent</option>
+                <option value="for_sale">For Sale</option>
+                <option value="for_rent">For Rent</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelS}>Price From (€)</label>
+              <input style={inputS} type="number" placeholder="0" value={priceMin} onChange={e => setPriceMin(e.target.value)} />
+            </div>
+            <div>
+              <label style={labelS}>Price To (€)</label>
+              <input style={inputS} type="number" placeholder="Any" value={priceMax} onChange={e => setPriceMax(e.target.value)} />
+            </div>
           </div>
-          <div>
-            <label style={labelS}>Region</label>
-            <select style={inputS} value={region} onChange={e => setRegion(e.target.value)}>
-              <option value="">All regions</option>
-              {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
-            </select>
+
+          <div className="hs-filter-grid-2">
+            <div>
+              <label style={labelS}>Sq.m. From</label>
+              <input style={inputS} type="number" placeholder="0" value={sqmMin} onChange={e => setSqmMin(e.target.value)} />
+            </div>
+            <div>
+              <label style={labelS}>Sq.m. To</label>
+              <input style={inputS} type="number" placeholder="Any" value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
+            </div>
           </div>
-          <div>
-            <label style={labelS}>Status</label>
-            <select style={inputS} value={status} onChange={e => setStatus(e.target.value)}>
-              <option value="">For Sale &amp; Rent</option>
-              <option value="for_sale">For Sale</option>
-              <option value="for_rent">For Rent</option>
-            </select>
-          </div>
-          <div>
-            <label style={labelS}>Price From (€)</label>
-            <input style={inputS} type="number" placeholder="0" value={priceMin} onChange={e => setPriceMin(e.target.value)} />
-          </div>
-          <div>
-            <label style={labelS}>Price To (€)</label>
-            <input style={inputS} type="number" placeholder="Any" value={priceMax} onChange={e => setPriceMax(e.target.value)} />
+
+          {/* More Filters toggle */}
+          <button
+            onClick={() => setShowMore(v => !v)}
+            style={{ background: 'transparent', border: '1px solid rgba(212,160,23,0.25)', color: '#F0C040', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', padding: '10px 24px', cursor: 'pointer', marginBottom: showMore ? '24px' : '0' }}
+          >
+            {showMore ? '− Less Filters' : '+ More Filters'}
+          </button>
+
+          {/* Expanded filters */}
+          {showMore && (
+            <div>
+              <div className="hs-filter-grid-6">
+                <div>
+                  <label style={labelS}>Bedrooms From</label>
+                  <input style={inputS} type="number" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Bedrooms To</label>
+                  <input style={inputS} type="number" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Bathrooms From</label>
+                  <input style={inputS} type="number" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Bathrooms To</label>
+                  <input style={inputS} type="number" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Floor From</label>
+                  <input style={inputS} type="number" value={floorMin} onChange={e => setFloorMin(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Floor To</label>
+                  <input style={inputS} type="number" value={floorMax} onChange={e => setFloorMax(e.target.value)} />
+                </div>
+              </div>
+
+              <div className="hs-filter-grid-6">
+                <div>
+                  <label style={labelS}>Year From</label>
+                  <input style={inputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Year To</label>
+                  <input style={inputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} />
+                </div>
+                <div>
+                  <label style={labelS}>Heating</label>
+                  <select className="hs-select" style={inputS} value={heating} onChange={e => setHeating(e.target.value)}>
+                    <option value="">Any</option>
+                    {['Autonomous','Central','Air Condition','Fireplace','Radiator','Underfloor','Solar','None'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelS}>View</label>
+                  <select className="hs-select" style={inputS} value={view} onChange={e => setView(e.target.value)}>
+                    <option value="">Any</option>
+                    {['Sea View','Mountain View','City View','Garden View','Pool View','Street View','Acropolis View'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelS}>Frames</label>
+                  <select className="hs-select" style={inputS} value={frames} onChange={e => setFrames(e.target.value)}>
+                    <option value="">Any</option>
+                    {['Aluminium','PVC','Wooden','Iron','Mixed'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelS}>Parking</label>
+                  <select className="hs-select" style={inputS} value={parking} onChange={e => setParking(e.target.value)}>
+                    <option value="">Any</option>
+                    {['Closed','Open','Pilotis','Basement','Street','None'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="hs-filter-grid-6" style={{ marginBottom: '24px' }}>
+                <div>
+                  <label style={labelS}>Transport</label>
+                  <select className="hs-select" style={inputS} value={transport} onChange={e => setTransport(e.target.value)}>
+                    <option value="">Any</option>
+                    {['Metro','Bus','Tram','Train','ISAP','None'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              {/* Checkboxes */}
+              <div className="hs-checkboxes-grid">
+                {CHECKBOXES.map(({ key, label }) => (
+                  <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '11px', color: '#CCCCCC', letterSpacing: '0.5px' }}>
+                    <input
+                      type="checkbox"
+                      checked={!!checkboxes[key]}
+                      onChange={e => setCheckboxes(prev => ({ ...prev, [key]: e.target.checked }))}
+                      style={{ accentColor: '#F0C040', width: '14px', height: '14px', cursor: 'pointer', flexShrink: 0 }}
+                    />
+                    {label}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Results count + clear */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(212,160,23,0.08)' }}>
+            <span style={{ fontSize: '12px', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
+              {filtered.length} {filtered.length === 1 ? 'property' : 'properties'} found
+            </span>
+            <button onClick={clearAll} style={{ background: 'transparent', border: 'none', color: '#888888', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Montserrat, sans-serif' }}>
+              Clear All
+            </button>
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px', marginBottom: '20px' }}>
-          <div>
-            <label style={labelS}>Sq.m. From</label>
-            <input style={inputS} type="number" placeholder="0" value={sqmMin} onChange={e => setSqmMin(e.target.value)} />
+        {/* ── GRID ── */}
+        {filtered.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
+            <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
+            <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties match your search criteria.</p>
           </div>
-          <div>
-            <label style={labelS}>Sq.m. To</label>
-            <input style={inputS} type="number" placeholder="Any" value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
-          </div>
-        </div>
-
-        {/* More Filters toggle */}
-        <button
-          onClick={() => setShowMore(v => !v)}
-          style={{ background: 'transparent', border: '1px solid rgba(212,160,23,0.25)', color: '#F0C040', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', letterSpacing: '3px', textTransform: 'uppercase', padding: '10px 24px', cursor: 'pointer', marginBottom: showMore ? '24px' : '0' }}
-        >
-          {showMore ? '− Less Filters' : '+ More Filters'}
-        </button>
-
-        {/* Expanded filters */}
-        {showMore && (
-          <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px', marginBottom: '20px' }}>
-              <div>
-                <label style={labelS}>Bedrooms From</label>
-                <input style={inputS} type="number" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Bedrooms To</label>
-                <input style={inputS} type="number" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Bathrooms From</label>
-                <input style={inputS} type="number" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Bathrooms To</label>
-                <input style={inputS} type="number" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Floor From</label>
-                <input style={inputS} type="number" value={floorMin} onChange={e => setFloorMin(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Floor To</label>
-                <input style={inputS} type="number" value={floorMax} onChange={e => setFloorMax(e.target.value)} />
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px', marginBottom: '20px' }}>
-              <div>
-                <label style={labelS}>Year From</label>
-                <input style={inputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Year To</label>
-                <input style={inputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} />
-              </div>
-              <div>
-                <label style={labelS}>Heating</label>
-                <select style={inputS} value={heating} onChange={e => setHeating(e.target.value)}>
-                  <option value="">Any</option>
-                  {['Autonomous','Central','Air Condition','Fireplace','Radiator','Underfloor','Solar','None'].map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-              <div>
-                <label style={labelS}>View</label>
-                <select style={inputS} value={view} onChange={e => setView(e.target.value)}>
-                  <option value="">Any</option>
-                  {['Sea View','Mountain View','City View','Garden View','Pool View','Street View','Acropolis View'].map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-              <div>
-                <label style={labelS}>Frames</label>
-                <select style={inputS} value={frames} onChange={e => setFrames(e.target.value)}>
-                  <option value="">Any</option>
-                  {['Aluminium','PVC','Wooden','Iron','Mixed'].map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-              <div>
-                <label style={labelS}>Parking</label>
-                <select style={inputS} value={parking} onChange={e => setParking(e.target.value)}>
-                  <option value="">Any</option>
-                  {['Closed','Open','Pilotis','Basement','Street','None'].map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '16px', marginBottom: '24px' }}>
-              <div>
-                <label style={labelS}>Transport</label>
-                <select style={inputS} value={transport} onChange={e => setTransport(e.target.value)}>
-                  <option value="">Any</option>
-                  {['Metro','Bus','Tram','Train','ISAP','None'].map(t => <option key={t}>{t}</option>)}
-                </select>
-              </div>
-            </div>
-
-            {/* Checkboxes */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
-              {CHECKBOXES.map(({ key, label }) => (
-                <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '11px', color: '#CCCCCC', letterSpacing: '0.5px' }}>
-                  <input
-                    type="checkbox"
-                    checked={!!checkboxes[key]}
-                    onChange={e => setCheckboxes(prev => ({ ...prev, [key]: e.target.checked }))}
-                    style={{ accentColor: '#F0C040', width: '14px', height: '14px', cursor: 'pointer' }}
-                  />
-                  {label}
-                </label>
-              ))}
-            </div>
+        ) : (
+          <div className="hs-properties-grid">
+            {filtered.map(p => <PropertyCard key={p.id} property={p} />)}
           </div>
         )}
 
-        {/* Results count + clear */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(212,160,23,0.08)' }}>
-          <span style={{ fontSize: '12px', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
-            {filtered.length} {filtered.length === 1 ? 'property' : 'properties'} found
-          </span>
-          <button onClick={clearAll} style={{ background: 'transparent', border: 'none', color: '#888888', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Montserrat, sans-serif' }}>
-            Clear All
-          </button>
-        </div>
       </div>
-
-      {/* ── GRID ── */}
-      {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
-          <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
-          <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties match your search criteria.</p>
-        </div>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-          {filtered.map(p => <PropertyCard key={p.id} property={p} />)}
-        </div>
-      )}
-
-    </div>
+    </>
   )
 }

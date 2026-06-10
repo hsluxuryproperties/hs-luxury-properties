@@ -1,44 +1,72 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 import type { Property } from '@/types'
 
-async function getFeaturedProperties() {
-  const supabase = await createClient()
+type Locale = 'en' | 'gr'
 
-  const { data: investors } = await supabase
-    .from('properties')
-    .select('*, images:property_images(*)')
-    .eq('featured_investor', true)
-    .eq('active', true)
-    .order('created_at', { ascending: false })
-    .limit(3)
+function useLocale(): Locale {
+  const [locale, setLocale] = useState<Locale>('en')
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)hs_locale=([^;]+)/)
+    setLocale((match?.[1] as Locale) ?? 'en')
+  }, [])
+  return locale
+}
 
-  const { data: homes } = await supabase
-    .from('properties')
-    .select('*, images:property_images(*)')
-    .eq('featured_home', true)
-    .eq('active', true)
-    .order('created_at', { ascending: false })
-    .limit(3)
-
-  return {
-    investors: investors ?? [],
-    homes:     homes     ?? [],
-  }
+const t = {
+  en: {
+    slogan: 'Luxury Properties · Extraordinary Living',
+    about: "Connecting discerning clients with the world's most exceptional properties. Discretion, expertise, and extraordinary results.",
+    explore: 'Explore Properties',
+    viewAll: 'View All Properties',
+    featured: 'Featured',
+    forInvestors: 'For Investors',
+    forHomeowners: 'For Homeowners',
+    investment: 'Investment Property',
+    residential: 'Residential Property',
+    comingSoon: 'Coming Soon',
+    forSale: 'For Sale',
+    forRent: 'For Rent',
+    investmentTag: 'Investment',
+    residenceTag: 'Residence',
+    viewProperty: 'View Property',
+  },
+  gr: {
+    slogan: 'Πολυτελή Ακίνητα · Εξαιρετική Διαβίωση',
+    about: 'Συνδέουμε απαιτητικούς πελάτες με τα πιο εξαιρετικά ακίνητα παγκοσμίως. Διακριτικότητα, τεχνογνωσία και εξαιρετικά αποτελέσματα.',
+    explore: 'Εξερευνήστε Ακίνητα',
+    viewAll: 'Όλα τα Ακίνητα',
+    featured: 'Προτεινόμενα',
+    forInvestors: 'Για Επενδυτές',
+    forHomeowners: 'Για Ιδιοκατοίκηση',
+    investment: 'Επενδυτικό Ακίνητο',
+    residential: 'Οικιστικό Ακίνητο',
+    comingSoon: 'Σύντομα',
+    forSale: 'Προς Πώληση',
+    forRent: 'Προς Ενοικίαση',
+    investmentTag: 'Επένδυση',
+    residenceTag: 'Κατοικία',
+    viewProperty: 'Δείτε το Ακίνητο',
+  },
 }
 
 function formatPrice(price: number) {
   return '€' + Number(price).toLocaleString('el-GR')
 }
 
-function PropertyCard({ property }: { property: Property }) {
+function PropertyCard({ property, locale }: { property: Property; locale: Locale }) {
+  const tr = t[locale]
   const firstImage = property.images?.[0]?.url
+  const statusLabel = property.status === 'for_sale' ? tr.forSale : tr.forRent
   const tag = property.featured_investor
-    ? `Investment · ${property.status === 'for_sale' ? 'For Sale' : 'For Rent'}`
-    : `Residence · ${property.status === 'for_sale' ? 'For Sale' : 'For Rent'}`
+    ? `${tr.investmentTag} · ${statusLabel}`
+    : `${tr.residenceTag} · ${statusLabel}`
 
   return (
     <Link href={`/properties/${property.property_code}`} style={{ textDecoration: 'none' }}>
@@ -62,7 +90,7 @@ function PropertyCard({ property }: { property: Property }) {
           <div className="property-name">{property.title}</div>
           <div className="property-location">{property.region}</div>
           <div className="property-price">{formatPrice(property.price)}</div>
-          <div className="property-cta">View Property</div>
+          <div className="property-cta">{tr.viewProperty}</div>
         </div>
       </div>
     </Link>
@@ -83,8 +111,38 @@ function EmptyCard({ label }: { label: string }) {
   )
 }
 
-export default async function Home() {
-  const { investors, homes } = await getFeaturedProperties()
+export default function Home() {
+  const locale = useLocale()
+  const tr = t[locale]
+
+  const [investors, setInvestors] = useState<Property[]>([])
+  const [homes, setHomes] = useState<Property[]>([])
+
+  useEffect(() => {
+    async function load() {
+      const supabase = createClient()
+
+      const { data: inv } = await supabase
+        .from('properties')
+        .select('*, images:property_images(*)')
+        .eq('featured_investor', true)
+        .eq('active', true)
+        .order('created_at', { ascending: false })
+        .limit(3)
+
+      const { data: hom } = await supabase
+        .from('properties')
+        .select('*, images:property_images(*)')
+        .eq('featured_home', true)
+        .eq('active', true)
+        .order('created_at', { ascending: false })
+        .limit(3)
+
+      setInvestors(inv ?? [])
+      setHomes(hom ?? [])
+    }
+    load()
+  }, [])
 
   return (
     <>
@@ -104,46 +162,37 @@ export default async function Home() {
           overflow: 'hidden',
         }}
       >
-      {/* Haigh Spanoudakis Real Estate Inspired Luxury Art-Deco Pattern — High Contrast */}
-<div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-  {/* Increased overall opacity from 0.35 to 0.65 for crisp visibility */}
-  <div style={{
-    position: 'absolute', 
-    inset: 0,
-    opacity: 0.65, 
-    background: `
-      repeating-linear-gradient(30deg, transparent, transparent 50px, rgba(240,192,64,0.22) 50px, rgba(240,192,64,0.22) 51px),
-      repeating-linear-gradient(-30deg, transparent, transparent 50px, rgba(212,160,23,0.18) 50px, rgba(212,160,23,0.18) 51px),
-      repeating-linear-gradient(75deg, transparent, transparent 70px, rgba(240,192,64,0.15) 70px, rgba(240,192,64,0.15) 71px),
-      repeating-linear-gradient(-75deg, transparent, transparent 70px, rgba(212,160,23,0.15) 70px, rgba(212,160,23,0.15) 71px)
-    `,
-  }} />
+        {/* Art-Deco Background Pattern */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.65,
+            background: `
+              repeating-linear-gradient(30deg, transparent, transparent 50px, rgba(240,192,64,0.22) 50px, rgba(240,192,64,0.22) 51px),
+              repeating-linear-gradient(-30deg, transparent, transparent 50px, rgba(212,160,23,0.18) 50px, rgba(212,160,23,0.18) 51px),
+              repeating-linear-gradient(75deg, transparent, transparent 70px, rgba(240,192,64,0.15) 70px, rgba(240,192,64,0.15) 71px),
+              repeating-linear-gradient(-75deg, transparent, transparent 70px, rgba(212,160,23,0.15) 70px, rgba(212,160,23,0.15) 71px)
+            `,
+          }} />
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'radial-gradient(circle at 50% 50%, transparent 10%, rgba(10,10,10,0.4) 40%, #0A0A0A 85%)',
+          }} />
+        </div>
 
-  {/* Adjusted Vignette: Pushed the transparent boundaries back so lines show significantly more across the viewport */}
-  <div style={{
-    position: 'absolute',
-    inset: 0,
-    background: 'radial-gradient(circle at 50% 50%, transparent 10%, rgba(10,10,10,0.4) 40%, #0A0A0A 85%)',
-  }} />
-</div>
-
-        {/* Replaced Monogram text with Image component  */}
-        <div 
-          className="fade-up" 
-  style={{ 
-    marginBottom: '32px', 
-    position: 'relative',
-  }}
->
-  <Image 
-    src="/logo.png" 
-    alt="HS Luxury Properties Logo" 
-    width={240} 
-    height={80} 
-    style={{ objectFit: 'contain' }}
-    priority 
-  />
-</div>
+        {/* Logo */}
+        <div className="fade-up" style={{ marginBottom: '32px', position: 'relative' }}>
+          <Image
+            src="/logo.png"
+            alt="HS Luxury Properties Logo"
+            width={240}
+            height={80}
+            style={{ objectFit: 'contain' }}
+            priority
+          />
+        </div>
 
         {/* Divider */}
         <div className="fade-up delay-1" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '24px' }}>
@@ -172,9 +221,9 @@ export default async function Home() {
           marginBottom: '16px',
           fontWeight: 400,
           fontFamily: 'Montserrat, sans-serif',
-        }}>Luxury Properties · Extraordinary Living</p>
+        }}>{tr.slogan}</p>
 
-        {/* About paragraph */}
+        {/* About */}
         <p className="fade-up delay-2" style={{
           fontSize: '13px',
           color: '#888888',
@@ -183,14 +232,11 @@ export default async function Home() {
           marginBottom: '48px',
           fontFamily: 'Montserrat, sans-serif',
           fontWeight: 300,
-        }}>
-          Connecting discerning clients with the world&#39;s most exceptional
-          properties. Discretion, expertise, and extraordinary results.
-        </p>
+        }}>{tr.about}</p>
 
         {/* CTA */}
         <Link href="/properties" className="hero-cta fade-up delay-3">
-          <span>Explore Properties</span>
+          <span>{tr.explore}</span>
         </Link>
 
         {/* Featured listings */}
@@ -199,16 +245,16 @@ export default async function Home() {
           {/* For Investors */}
           <div style={{ marginBottom: '60px' }}>
             <p style={{ fontSize: '10px', letterSpacing: '5px', textTransform: 'uppercase', color: '#888888', marginBottom: '8px', fontFamily: 'Montserrat, sans-serif' }}>
-              Featured
+              {tr.featured}
             </p>
             <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 300, color: '#F5F0E8', letterSpacing: '3px', marginBottom: '8px' }}>
-              For Investors
+              {tr.forInvestors}
             </h2>
             <div style={{ width: '40px', height: '1px', background: '#F0C040', marginBottom: '32px' }} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {investors.length > 0
-                ? investors.map(p => <PropertyCard key={p.id} property={p as Property} />)
-                : [0,1,2].map(i => <EmptyCard key={i} label="Investment Property" />)
+                ? investors.map(p => <PropertyCard key={p.id} property={p as Property} locale={locale} />)
+                : [0,1,2].map(i => <EmptyCard key={i} label={tr.investment} />)
               }
             </div>
           </div>
@@ -216,16 +262,16 @@ export default async function Home() {
           {/* For Homeowners */}
           <div>
             <p style={{ fontSize: '10px', letterSpacing: '5px', textTransform: 'uppercase', color: '#888888', marginBottom: '8px', fontFamily: 'Montserrat, sans-serif' }}>
-              Featured
+              {tr.featured}
             </p>
             <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(24px, 3vw, 36px)', fontWeight: 300, color: '#F5F0E8', letterSpacing: '3px', marginBottom: '8px' }}>
-              For Homeowners
+              {tr.forHomeowners}
             </h2>
             <div style={{ width: '40px', height: '1px', background: '#F0C040', marginBottom: '32px' }} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
               {homes.length > 0
-                ? homes.map(p => <PropertyCard key={p.id} property={p as Property} />)
-                : [0,1,2].map(i => <EmptyCard key={i} label="Residential Property" />)
+                ? homes.map(p => <PropertyCard key={p.id} property={p as Property} locale={locale} />)
+                : [0,1,2].map(i => <EmptyCard key={i} label={tr.residential} />)
               }
             </div>
           </div>
@@ -233,7 +279,7 @@ export default async function Home() {
           {/* View all */}
           <div style={{ textAlign: 'center', marginTop: '60px' }}>
             <Link href="/properties" className="hero-cta">
-              <span>View All Properties</span>
+              <span>{tr.viewAll}</span>
             </Link>
           </div>
 

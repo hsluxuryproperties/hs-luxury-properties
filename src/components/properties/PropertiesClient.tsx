@@ -5,14 +5,160 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import type { Property } from '@/types'
 
-// Dynamically import the map to avoid SSR issues with Leaflet
 const PropertyMap = dynamic(() => import('./PropertyMap'), { ssr: false, loading: () => (
   <div style={{ width: '100%', height: '100%', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <span style={{ color: '#888', fontFamily: 'Montserrat, sans-serif', fontSize: '11px', letterSpacing: '2px' }}>LOADING MAP...</span>
   </div>
 )})
 
-// ── BILINGUAL REGIONS ────────────────────────────────────────────────────────
+// ── LOCALE ────────────────────────────────────────────────────────────────────
+type Locale = 'en' | 'gr'
+
+function useLocale(): Locale {
+  const [locale, setLocale] = useState<Locale>('en')
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)hs_locale=([^;]+)/)
+    setLocale((match?.[1] as Locale) ?? 'en')
+  }, [])
+  return locale
+}
+
+const T = {
+  en: {
+    titleOrCode:    'Title or Code',
+    searchPlaceholder: 'Search...',
+    regionLabel:    'Region / Περιοχή',
+    regionPlaceholder: 'Region / Περιοχή',
+    status:         'Status',
+    forSaleAndRent: 'For Sale & Rent',
+    forSale:        'For Sale',
+    forRent:        'For Rent',
+    priceFrom:      'Price From (€)',
+    priceTo:        'Price To (€)',
+    sqmFrom:        'Sq.m. From',
+    sqmTo:          'Sq.m. To',
+    more:           '+ More',
+    less:           '− Less',
+    bedroomsFrom:   'Bedrooms From',
+    bedroomsTo:     'Bedrooms To',
+    bathroomsFrom:  'Bathrooms From',
+    bathroomsTo:    'Bathrooms To',
+    floorFrom:      'Floor From',
+    floorTo:        'Floor To',
+    yearFrom:       'Year From',
+    yearTo:         'Year To',
+    heating:        'Heating',
+    view:           'View',
+    frames:         'Frames',
+    parking:        'Parking',
+    transport:      'Transport',
+    any:            'Any',
+    clearAll:       'Clear All',
+    property:       'property',
+    properties:     'properties',
+    found:          'found',
+    noResults:      'No properties match your search criteria.',
+    bed:            'bed',
+    bath:           'bath',
+    floor:          'Floor',
+    heatingOpts:    ['Autonomous','Central','Air Condition','Fireplace','Radiator','Underfloor','Solar','None'],
+    viewOpts:       ['Sea View','Mountain View','City View','Garden View','Pool View','Street View','Acropolis View'],
+    frameOpts:      ['Aluminium','PVC','Wooden','Iron','Mixed'],
+    parkingOpts:    ['Closed','Open','Pilotis','Basement','Street','None'],
+    transportOpts:  ['Metro','Bus','Tram','Train','ISAP','None'],
+    checkboxes: [
+      { key: 'elevator',           label: 'Elevator'            },
+      { key: 'warehouse',          label: 'Warehouse'           },
+      { key: 'garden',             label: 'Garden'              },
+      { key: 'fireplace',          label: 'Fireplace'           },
+      { key: 'pool',               label: 'Pool'                },
+      { key: 'ac',                 label: 'A/C'                 },
+      { key: 'armored_door',       label: 'Armored Door'        },
+      { key: 'closet',             label: 'Closet'              },
+      { key: 'awnings',            label: 'Awnings'             },
+      { key: 'solar_water_heater', label: 'Solar Water Heater'  },
+      { key: 'painted',            label: 'Painted'             },
+      { key: 'penthouse',          label: 'Penthouse'           },
+      { key: 'bright',             label: 'Bright'              },
+      { key: 'furnished',          label: 'Furnished'           },
+      { key: 'beachfront',         label: 'Beachfront'          },
+      { key: 'luxury',             label: 'Luxury Property'     },
+      { key: 'investment',         label: 'Investment Property' },
+      { key: 'newly_built',        label: 'Newly Built'         },
+      { key: 'student_friendly',   label: 'Student Friendly'    },
+      { key: 'from_auction',       label: 'From Auction'        },
+      { key: 'golden_visa',        label: 'Golden Visa'         },
+    ],
+  },
+  gr: {
+    titleOrCode:    'Τίτλος ή Κωδικός',
+    searchPlaceholder: 'Αναζήτηση...',
+    regionLabel:    'Περιοχή / Region',
+    regionPlaceholder: 'Περιοχή / Region',
+    status:         'Κατάσταση',
+    forSaleAndRent: 'Πώληση & Ενοικίαση',
+    forSale:        'Προς Πώληση',
+    forRent:        'Προς Ενοικίαση',
+    priceFrom:      'Τιμή Από (€)',
+    priceTo:        'Τιμή Έως (€)',
+    sqmFrom:        'Τ.μ. Από',
+    sqmTo:          'Τ.μ. Έως',
+    more:           '+ Περισσότερα',
+    less:           '− Λιγότερα',
+    bedroomsFrom:   'Υπνοδ. Από',
+    bedroomsTo:     'Υπνοδ. Έως',
+    bathroomsFrom:  'Μπάνια Από',
+    bathroomsTo:    'Μπάνια Έως',
+    floorFrom:      'Όροφος Από',
+    floorTo:        'Όροφος Έως',
+    yearFrom:       'Έτος Από',
+    yearTo:         'Έτος Έως',
+    heating:        'Θέρμανση',
+    view:           'Θέα',
+    frames:         'Κουφώματα',
+    parking:        'Πάρκινγκ',
+    transport:      'Μέσα Μεταφοράς',
+    any:            'Οποιοδήποτε',
+    clearAll:       'Καθαρισμός',
+    property:       'ακίνητο',
+    properties:     'ακίνητα',
+    found:          'βρέθηκαν',
+    noResults:      'Δεν βρέθηκαν ακίνητα με τα επιλεγμένα κριτήρια.',
+    bed:            'υπνοδ.',
+    bath:           'μπάνια',
+    floor:          'Όροφος',
+    heatingOpts:    ['Αυτόνομη','Κεντρική','Κλιματισμός','Τζάκι','Καλοριφέρ','Ενδοδαπέδια','Ηλιακή','Καμία'],
+    viewOpts:       ['Θέα Θάλασσα','Θέα Βουνό','Θέα Πόλη','Θέα Κήπο','Θέα Πισίνα','Θέα Δρόμο','Θέα Ακρόπολη'],
+    frameOpts:      ['Αλουμίνιο','PVC','Ξύλινα','Σιδερένια','Μικτά'],
+    parkingOpts:    ['Κλειστό','Ανοιχτό','Πιλοτή','Υπόγειο','Δρόμος','Κανένα'],
+    transportOpts:  ['Μετρό','Λεωφορείο','Τραμ','Τρένο','ΗΣΑΠ','Κανένα'],
+    checkboxes: [
+      { key: 'elevator',           label: 'Ανελκυστήρας'       },
+      { key: 'warehouse',          label: 'Αποθήκη'             },
+      { key: 'garden',             label: 'Κήπος'               },
+      { key: 'fireplace',          label: 'Τζάκι'               },
+      { key: 'pool',               label: 'Πισίνα'              },
+      { key: 'ac',                 label: 'A/C'                 },
+      { key: 'armored_door',       label: 'Θωρακισμένη Πόρτα'  },
+      { key: 'closet',             label: 'Ντουλάπα'            },
+      { key: 'awnings',            label: 'Τέντες'              },
+      { key: 'solar_water_heater', label: 'Ηλιακός Θερμοσίφων' },
+      { key: 'painted',            label: 'Βαμμένο'             },
+      { key: 'penthouse',          label: 'Penthouse'           },
+      { key: 'bright',             label: 'Φωτεινό'             },
+      { key: 'furnished',          label: 'Επιπλωμένο'          },
+      { key: 'beachfront',         label: 'Παραθαλάσσιο'        },
+      { key: 'luxury',             label: 'Πολυτελές'           },
+      { key: 'investment',         label: 'Επενδυτικό'          },
+      { key: 'newly_built',        label: 'Νεόδμητο'            },
+      { key: 'student_friendly',   label: 'Φοιτητικό'           },
+      { key: 'from_auction',       label: 'Από Πλειστηριασμό'   },
+      { key: 'golden_visa',        label: 'Golden Visa'         },
+    ],
+  },
+}
+
+// ── BILINGUAL REGIONS ─────────────────────────────────────────────────────────
 const REGIONS: { en: string; gr: string }[] = [
   { en: 'Kolonaki - Lycabettus (Athens - Center)', gr: 'Κολωνάκι - Λυκαβηττός (Αθήνα - Κέντρο)' },
   { en: 'Syntagma - Plaka (Athens - Center)', gr: 'Σύνταγμα - Πλάκα (Αθήνα - Κέντρο)' },
@@ -148,7 +294,7 @@ const REGIONS: { en: string; gr: string }[] = [
 ]
 
 // ── REGION AUTOCOMPLETE ───────────────────────────────────────────────────────
-function RegionAutocomplete({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function RegionAutocomplete({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   const [query, setQuery] = useState(value)
   const [open,  setOpen]  = useState(false)
   const ref               = useRef<HTMLDivElement>(null)
@@ -192,7 +338,7 @@ function RegionAutocomplete({ value, onChange }: { value: string; onChange: (v: 
       <div style={{ position: 'relative' }}>
         <input
           style={filterInputS}
-          placeholder="Region / Περιοχή"
+          placeholder={placeholder}
           value={query}
           onChange={handleChange}
           onFocus={() => query && setOpen(true)}
@@ -246,7 +392,8 @@ const filterLabelS: React.CSSProperties = {
 }
 
 // ── PROPERTY CARD ─────────────────────────────────────────────────────────────
-function PropertyCard({ property, highlighted, onHover }: { property: Property; highlighted: boolean; onHover: (id: string | null) => void }) {
+function PropertyCard({ property, highlighted, onHover, locale }: { property: Property; highlighted: boolean; onHover: (id: string | null) => void; locale: Locale }) {
+  const tr = T[locale]
   const [imgIndex, setImgIndex] = useState(0)
   const images = (property.images ?? []) as any[]
   const hasImages = images.length > 0
@@ -285,7 +432,7 @@ function PropertyCard({ property, highlighted, onHover }: { property: Property; 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
               <span style={{ fontSize: '9px', letterSpacing: '3px', color: '#F0C040', fontFamily: 'Montserrat, sans-serif', textTransform: 'uppercase' }}>{property.property_code}</span>
               <span style={{ fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase', padding: '3px 8px', border: `1px solid ${property.status === 'for_sale' ? 'rgba(212,160,23,0.4)' : 'rgba(100,180,100,0.4)'}`, color: property.status === 'for_sale' ? '#F0C040' : '#80C080', fontFamily: 'Montserrat, sans-serif' }}>
-                {property.status === 'for_sale' ? 'For Sale' : 'For Rent'}
+                {property.status === 'for_sale' ? tr.forSale : tr.forRent}
               </span>
             </div>
             <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '18px', fontWeight: 400, color: '#F5F0E8', marginBottom: '4px', lineHeight: 1.3 }}>{property.title}</div>
@@ -293,9 +440,9 @@ function PropertyCard({ property, highlighted, onHover }: { property: Property; 
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: (property as any).description ? '10px' : '0' }}>
               {property.region    && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>📍 {property.region}</span>}
               {property.sqm       && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{property.sqm} m²</span>}
-              {(property.bedrooms  ?? 0) > 0 && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{property.bedrooms} bed</span>}
-              {(property.bathrooms ?? 0) > 0 && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{property.bathrooms} bath</span>}
-              {property.floor != null && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>Floor {property.floor}</span>}
+              {(property.bedrooms  ?? 0) > 0 && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{property.bedrooms} {tr.bed}</span>}
+              {(property.bathrooms ?? 0) > 0 && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{property.bathrooms} {tr.bath}</span>}
+              {property.floor != null && <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>{tr.floor} {property.floor}</span>}
             </div>
             {(property as any).description && (
               <p style={{ fontSize: '11px', color: '#666', fontFamily: 'Montserrat, sans-serif', fontWeight: 300, lineHeight: 1.7, margin: 0, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden', borderTop: '1px solid rgba(212,160,23,0.08)', paddingTop: '10px' }}>
@@ -311,6 +458,9 @@ function PropertyCard({ property, highlighted, onHover }: { property: Property; 
 
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
 export default function PropertiesClient({ properties }: { properties: Property[] }) {
+  const locale = useLocale()
+  const tr = T[locale]
+
   const [search,       setSearch]       = useState('')
   const [region,       setRegion]       = useState('')
   const [status,       setStatus]       = useState('')
@@ -334,30 +484,6 @@ export default function PropertiesClient({ properties }: { properties: Property[
   const [transport,    setTransport]    = useState('')
   const [checkboxes,   setCheckboxes]   = useState<Record<string, boolean>>({})
   const [hoveredId,    setHoveredId]    = useState<string | null>(null)
-
-  const CHECKBOXES = [
-    { key: 'elevator',           label: 'Elevator'            },
-    { key: 'warehouse',          label: 'Warehouse'           },
-    { key: 'garden',             label: 'Garden'              },
-    { key: 'fireplace',          label: 'Fireplace'           },
-    { key: 'pool',               label: 'Pool'                },
-    { key: 'ac',                 label: 'A/C'                 },
-    { key: 'armored_door',       label: 'Armored Door'        },
-    { key: 'closet',             label: 'Closet'              },
-    { key: 'awnings',            label: 'Awnings'             },
-    { key: 'solar_water_heater', label: 'Solar Water Heater'  },
-    { key: 'painted',            label: 'Painted'             },
-    { key: 'penthouse',          label: 'Penthouse'           },
-    { key: 'bright',             label: 'Bright'              },
-    { key: 'furnished',          label: 'Furnished'           },
-    { key: 'beachfront',         label: 'Beachfront'          },
-    { key: 'luxury',             label: 'Luxury Property'     },
-    { key: 'investment',         label: 'Investment Property' },
-    { key: 'newly_built',        label: 'Newly Built'         },
-    { key: 'student_friendly',   label: 'Student Friendly'    },
-    { key: 'from_auction',       label: 'From Auction'        },
-    { key: 'golden_visa',        label: 'Golden Visa'         },
-  ]
 
   const filtered = useMemo(() => {
     return properties.filter(p => {
@@ -419,12 +545,7 @@ export default function PropertiesClient({ properties }: { properties: Property[
           padding: 20px 24px;
           margin-bottom: 32px;
         }
-        .hs-filter-row {
-          display: flex;
-          gap: 12px;
-          align-items: flex-end;
-          flex-wrap: nowrap;
-        }
+        .hs-filter-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: nowrap; }
         .hs-filter-field { flex: 1; min-width: 0; }
         .hs-filter-field-wide { flex: 1.4; min-width: 0; }
         .hs-filter-pair { display: flex; gap: 6px; flex: 1.5; min-width: 0; }
@@ -464,43 +585,43 @@ export default function PropertiesClient({ properties }: { properties: Property[
           <div className="hs-filter-row">
 
             <div className="hs-filter-field-wide">
-              <label style={filterLabelS}>Title or Code</label>
-              <input style={filterInputS} placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
+              <label style={filterLabelS}>{tr.titleOrCode}</label>
+              <input style={filterInputS} placeholder={tr.searchPlaceholder} value={search} onChange={e => setSearch(e.target.value)} />
             </div>
 
             <div className="hs-filter-field-wide">
-              <label style={filterLabelS}>Region / Περιοχή</label>
-              <RegionAutocomplete value={region} onChange={setRegion} />
+              <label style={filterLabelS}>{tr.regionLabel}</label>
+              <RegionAutocomplete value={region} onChange={setRegion} placeholder={tr.regionPlaceholder} />
             </div>
 
             <div className="hs-filter-field">
-              <label style={filterLabelS}>Status</label>
+              <label style={filterLabelS}>{tr.status}</label>
               <select style={selectS} value={status} onChange={e => setStatus(e.target.value)}>
-                <option value="">For Sale &amp; Rent</option>
-                <option value="for_sale">For Sale</option>
-                <option value="for_rent">For Rent</option>
+                <option value="">{tr.forSaleAndRent}</option>
+                <option value="for_sale">{tr.forSale}</option>
+                <option value="for_rent">{tr.forRent}</option>
               </select>
             </div>
 
             <div className="hs-filter-pair">
               <div>
-                <label style={filterLabelS}>Price From (€)</label>
+                <label style={filterLabelS}>{tr.priceFrom}</label>
                 <input style={filterInputS} type="number" placeholder="0" value={priceMin} onChange={e => setPriceMin(e.target.value)} />
               </div>
               <div>
-                <label style={filterLabelS}>Price To (€)</label>
-                <input style={filterInputS} type="number" placeholder="Any" value={priceMax} onChange={e => setPriceMax(e.target.value)} />
+                <label style={filterLabelS}>{tr.priceTo}</label>
+                <input style={filterInputS} type="number" placeholder={tr.any} value={priceMax} onChange={e => setPriceMax(e.target.value)} />
               </div>
             </div>
 
             <div className="hs-filter-pair">
               <div>
-                <label style={filterLabelS}>Sq.m. From</label>
+                <label style={filterLabelS}>{tr.sqmFrom}</label>
                 <input style={filterInputS} type="number" placeholder="0" value={sqmMin} onChange={e => setSqmMin(e.target.value)} />
               </div>
               <div>
-                <label style={filterLabelS}>Sq.m. To</label>
-                <input style={filterInputS} type="number" placeholder="Any" value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
+                <label style={filterLabelS}>{tr.sqmTo}</label>
+                <input style={filterInputS} type="number" placeholder={tr.any} value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
               </div>
             </div>
 
@@ -509,7 +630,7 @@ export default function PropertiesClient({ properties }: { properties: Property[
                 onClick={() => setShowMore(v => !v)}
                 style={{ background: showMore ? 'rgba(240,192,64,0.1)' : 'transparent', border: '1px solid rgba(212,160,23,0.35)', color: '#F0C040', fontFamily: 'Montserrat, sans-serif', fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', padding: '10px 16px', cursor: 'pointer', whiteSpace: 'nowrap', height: '40px' }}
               >
-                {showMore ? '− Less' : '+ More'}
+                {showMore ? tr.less : tr.more}
               </button>
             </div>
 
@@ -518,51 +639,51 @@ export default function PropertiesClient({ properties }: { properties: Property[
           {showMore && (
             <div className="hs-more-panel">
               <div className="hs-more-grid-6">
-                <div><label style={filterLabelS}>Bedrooms From</label><input style={filterInputS} type="number" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Bedrooms To</label><input style={filterInputS} type="number" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Bathrooms From</label><input style={filterInputS} type="number" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Bathrooms To</label><input style={filterInputS} type="number" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Floor From</label><input style={filterInputS} type="number" value={floorMin} onChange={e => setFloorMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Floor To</label><input style={filterInputS} type="number" value={floorMax} onChange={e => setFloorMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bedroomsFrom}</label><input style={filterInputS} type="number" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bedroomsTo}</label><input style={filterInputS} type="number" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bathroomsFrom}</label><input style={filterInputS} type="number" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bathroomsTo}</label><input style={filterInputS} type="number" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.floorFrom}</label><input style={filterInputS} type="number" value={floorMin} onChange={e => setFloorMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.floorTo}</label><input style={filterInputS} type="number" value={floorMax} onChange={e => setFloorMax(e.target.value)} /></div>
               </div>
               <div className="hs-more-grid-6">
-                <div><label style={filterLabelS}>Year From</label><input style={filterInputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Year To</label><input style={filterInputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>Heating</label>
+                <div><label style={filterLabelS}>{tr.yearFrom}</label><input style={filterInputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.yearTo}</label><input style={filterInputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.heating}</label>
                   <select style={selectS} value={heating} onChange={e => setHeating(e.target.value)}>
-                    <option value="">Any</option>
-                    {['Autonomous','Central','Air Condition','Fireplace','Radiator','Underfloor','Solar','None'].map(t => <option key={t}>{t}</option>)}
+                    <option value="">{tr.any}</option>
+                    {tr.heatingOpts.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <div><label style={filterLabelS}>View</label>
+                <div><label style={filterLabelS}>{tr.view}</label>
                   <select style={selectS} value={view} onChange={e => setView(e.target.value)}>
-                    <option value="">Any</option>
-                    {['Sea View','Mountain View','City View','Garden View','Pool View','Street View','Acropolis View'].map(t => <option key={t}>{t}</option>)}
+                    <option value="">{tr.any}</option>
+                    {tr.viewOpts.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <div><label style={filterLabelS}>Frames</label>
+                <div><label style={filterLabelS}>{tr.frames}</label>
                   <select style={selectS} value={frames} onChange={e => setFrames(e.target.value)}>
-                    <option value="">Any</option>
-                    {['Aluminium','PVC','Wooden','Iron','Mixed'].map(t => <option key={t}>{t}</option>)}
+                    <option value="">{tr.any}</option>
+                    {tr.frameOpts.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
-                <div><label style={filterLabelS}>Parking</label>
+                <div><label style={filterLabelS}>{tr.parking}</label>
                   <select style={selectS} value={parking} onChange={e => setParking(e.target.value)}>
-                    <option value="">Any</option>
-                    {['Closed','Open','Pilotis','Basement','Street','None'].map(t => <option key={t}>{t}</option>)}
+                    <option value="">{tr.any}</option>
+                    {tr.parkingOpts.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
               </div>
               <div className="hs-more-grid-2">
-                <div><label style={filterLabelS}>Transport</label>
+                <div><label style={filterLabelS}>{tr.transport}</label>
                   <select style={selectS} value={transport} onChange={e => setTransport(e.target.value)}>
-                    <option value="">Any</option>
-                    {['Metro','Bus','Tram','Train','ISAP','None'].map(t => <option key={t}>{t}</option>)}
+                    <option value="">{tr.any}</option>
+                    {tr.transportOpts.map(t => <option key={t}>{t}</option>)}
                   </select>
                 </div>
               </div>
               <div className="hs-checkboxes-grid">
-                {CHECKBOXES.map(({ key, label }) => (
+                {tr.checkboxes.map(({ key, label }) => (
                   <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '11px', color: '#CCCCCC', letterSpacing: '0.5px', fontFamily: 'Montserrat, sans-serif' }}>
                     <input type="checkbox" checked={!!checkboxes[key]} onChange={e => setCheckboxes(prev => ({ ...prev, [key]: e.target.checked }))} style={{ accentColor: '#F0C040', width: '14px', height: '14px', cursor: 'pointer', flexShrink: 0 }} />
                     {label}
@@ -574,10 +695,10 @@ export default function PropertiesClient({ properties }: { properties: Property[
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(212,160,23,0.08)' }}>
             <span style={{ fontSize: '11px', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>
-              {filtered.length} {filtered.length === 1 ? 'property' : 'properties'} found
+              {filtered.length} {filtered.length === 1 ? tr.property : tr.properties} {tr.found}
             </span>
             <button onClick={clearAll} style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', cursor: 'pointer', fontFamily: 'Montserrat, sans-serif' }}>
-              Clear All
+              {tr.clearAll}
             </button>
           </div>
         </div>
@@ -588,12 +709,12 @@ export default function PropertiesClient({ properties }: { properties: Property[
             {filtered.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '80px 0', color: '#888', fontFamily: 'Montserrat, sans-serif' }}>
                 <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
-                <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties match your search criteria.</p>
+                <p style={{ fontSize: '13px', letterSpacing: '1px' }}>{tr.noResults}</p>
               </div>
             ) : (
               <div className="hs-properties-grid">
                 {filtered.map(p => (
-                  <PropertyCard key={p.id} property={p} highlighted={hoveredId === String(p.id)} onHover={setHoveredId} />
+                  <PropertyCard key={p.id} property={p} highlighted={hoveredId === String(p.id)} onHover={setHoveredId} locale={locale} />
                 ))}
               </div>
             )}

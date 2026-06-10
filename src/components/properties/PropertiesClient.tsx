@@ -61,11 +61,6 @@ const T = {
     bed:            'bed',
     bath:           'bath',
     floor:          'Floor',
-    heatingOpts:    ['Autonomous','Central','Air Condition','Fireplace','Radiator','Underfloor','Solar','None'],
-    viewOpts:       ['Sea View','Mountain View','City View','Garden View','Pool View','Street View','Acropolis View'],
-    frameOpts:      ['Aluminium','PVC','Wooden','Iron','Mixed'],
-    parkingOpts:    ['Closed','Open','Pilotis','Basement','Street','None'],
-    transportOpts:  ['Metro','Bus','Tram','Train','ISAP','None'],
     checkboxes: [
       { key: 'elevator',           label: 'Elevator'            },
       { key: 'warehouse',          label: 'Warehouse'           },
@@ -127,11 +122,6 @@ const T = {
     bed:            'υπνοδ.',
     bath:           'μπάνια',
     floor:          'Όροφος',
-    heatingOpts:    ['Αυτόνομη','Κεντρική','Κλιματισμός','Τζάκι','Καλοριφέρ','Ενδοδαπέδια','Ηλιακή','Καμία'],
-    viewOpts:       ['Θέα Θάλασσα','Θέα Βουνό','Θέα Πόλη','Θέα Κήπο','Θέα Πισίνα','Θέα Δρόμο','Θέα Ακρόπολη'],
-    frameOpts:      ['Αλουμίνιο','PVC','Ξύλινα','Σιδερένια','Μικτά'],
-    parkingOpts:    ['Κλειστό','Ανοιχτό','Πιλοτή','Υπόγειο','Δρόμος','Κανένα'],
-    transportOpts:  ['Μετρό','Λεωφορείο','Τραμ','Τρένο','ΗΣΑΠ','Κανένα'],
     checkboxes: [
       { key: 'elevator',           label: 'Ανελκυστήρας'       },
       { key: 'warehouse',          label: 'Αποθήκη'             },
@@ -157,6 +147,53 @@ const T = {
     ],
   },
 }
+// ── DROPDOWN OPTIONS (value = stored in DB, label = translated) ──────────────
+const HEATING_OPTS = [
+  { value: 'Autonomous',    en: 'Autonomous',    gr: 'Αυτόνομη'    },
+  { value: 'Central',       en: 'Central',       gr: 'Κεντρική'    },
+  { value: 'Air Condition', en: 'Air Condition', gr: 'Κλιματισμός' },
+  { value: 'Fireplace',     en: 'Fireplace',     gr: 'Τζάκι'       },
+  { value: 'Radiator',      en: 'Radiator',      gr: 'Καλοριφέρ'   },
+  { value: 'Underfloor',    en: 'Underfloor',    gr: 'Ενδοδαπέδια' },
+  { value: 'Solar',         en: 'Solar',         gr: 'Ηλιακή'      },
+  { value: 'None',          en: 'None',          gr: 'Καμία'       },
+]
+
+const VIEW_OPTS = [
+  { value: 'Sea View',       en: 'Sea View',       gr: 'Θέα Θάλασσα'  },
+  { value: 'Mountain View',  en: 'Mountain View',  gr: 'Θέα Βουνό'    },
+  { value: 'City View',      en: 'City View',      gr: 'Θέα Πόλη'     },
+  { value: 'Garden View',    en: 'Garden View',    gr: 'Θέα Κήπο'     },
+  { value: 'Pool View',      en: 'Pool View',      gr: 'Θέα Πισίνα'   },
+  { value: 'Street View',    en: 'Street View',    gr: 'Θέα Δρόμο'    },
+  { value: 'Acropolis View', en: 'Acropolis View', gr: 'Θέα Ακρόπολη' },
+]
+
+const FRAME_OPTS = [
+  { value: 'Aluminium', en: 'Aluminium', gr: 'Αλουμίνιο'  },
+  { value: 'PVC',       en: 'PVC',       gr: 'PVC'        },
+  { value: 'Wooden',    en: 'Wooden',    gr: 'Ξύλινα'     },
+  { value: 'Iron',      en: 'Iron',      gr: 'Σιδερένια'  },
+  { value: 'Mixed',     en: 'Mixed',     gr: 'Μικτά'      },
+]
+
+const PARKING_OPTS = [
+  { value: 'Closed',   en: 'Closed',   gr: 'Κλειστό'  },
+  { value: 'Open',     en: 'Open',     gr: 'Ανοιχτό'  },
+  { value: 'Pilotis',  en: 'Pilotis',  gr: 'Πιλοτή'   },
+  { value: 'Basement', en: 'Basement', gr: 'Υπόγειο'  },
+  { value: 'Street',   en: 'Street',   gr: 'Δρόμος'   },
+  { value: 'None',     en: 'None',     gr: 'Κανένα'   },
+]
+
+const TRANSPORT_OPTS = [
+  { value: 'Metro', en: 'Metro', gr: 'Μετρό'      },
+  { value: 'Bus',   en: 'Bus',   gr: 'Λεωφορείο'  },
+  { value: 'Tram',  en: 'Tram',  gr: 'Τραμ'       },
+  { value: 'Train', en: 'Train', gr: 'Τρένο'      },
+  { value: 'ISAP',  en: 'ISAP',  gr: 'ΗΣΑΠ'       },
+  { value: 'None',  en: 'None',  gr: 'Κανένα'     },
+]
 
 // ── BILINGUAL REGIONS ─────────────────────────────────────────────────────────
 const REGIONS: { en: string; gr: string }[] = [
@@ -649,28 +686,28 @@ export default function PropertiesClient({ properties }: { properties: Property[
               <div className="hs-more-grid-6">
                 <div><label style={filterLabelS}>{tr.yearFrom}</label><input style={filterInputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} /></div>
                 <div><label style={filterLabelS}>{tr.yearTo}</label><input style={filterInputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.heating}</label>
+               <div><label style={filterLabelS}>{tr.heating}</label>
                   <select style={selectS} value={heating} onChange={e => setHeating(e.target.value)}>
                     <option value="">{tr.any}</option>
-                    {tr.heatingOpts.map(t => <option key={t}>{t}</option>)}
+                    {HEATING_OPTS.map(o => <option key={o.value} value={o.value}>{o[locale]}</option>)}
                   </select>
                 </div>
                 <div><label style={filterLabelS}>{tr.view}</label>
                   <select style={selectS} value={view} onChange={e => setView(e.target.value)}>
                     <option value="">{tr.any}</option>
-                    {tr.viewOpts.map(t => <option key={t}>{t}</option>)}
+                    {VIEW_OPTS.map(o => <option key={o.value} value={o.value}>{o[locale]}</option>)}
                   </select>
                 </div>
                 <div><label style={filterLabelS}>{tr.frames}</label>
                   <select style={selectS} value={frames} onChange={e => setFrames(e.target.value)}>
                     <option value="">{tr.any}</option>
-                    {tr.frameOpts.map(t => <option key={t}>{t}</option>)}
+                    {FRAME_OPTS.map(o => <option key={o.value} value={o.value}>{o[locale]}</option>)}
                   </select>
                 </div>
                 <div><label style={filterLabelS}>{tr.parking}</label>
                   <select style={selectS} value={parking} onChange={e => setParking(e.target.value)}>
                     <option value="">{tr.any}</option>
-                    {tr.parkingOpts.map(t => <option key={t}>{t}</option>)}
+                    {PARKING_OPTS.map(o => <option key={o.value} value={o.value}>{o[locale]}</option>)}
                   </select>
                 </div>
               </div>
@@ -678,7 +715,7 @@ export default function PropertiesClient({ properties }: { properties: Property[
                 <div><label style={filterLabelS}>{tr.transport}</label>
                   <select style={selectS} value={transport} onChange={e => setTransport(e.target.value)}>
                     <option value="">{tr.any}</option>
-                    {tr.transportOpts.map(t => <option key={t}>{t}</option>)}
+                    {TRANSPORT_OPTS.map(o => <option key={o.value} value={o.value}>{o[locale]}</option>)}
                   </select>
                 </div>
               </div>

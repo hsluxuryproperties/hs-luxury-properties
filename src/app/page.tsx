@@ -36,6 +36,7 @@ const t = {
     investmentTag: 'Investment',
     residenceTag: 'Residence',
     viewProperty: 'View Property',
+    noDescription: 'Details available upon request.',
   },
   gr: {
     slogan: 'Πολυτελή Ακίνητα · Εξαιρετική Διαβίωση',
@@ -53,6 +54,7 @@ const t = {
     investmentTag: 'Επένδυση',
     residenceTag: 'Κατοικία',
     viewProperty: 'Δείτε το Ακίνητο',
+    noDescription: 'Λεπτομέρειες διαθέσιμες κατόπιν αιτήματος.',
   },
 }
 
@@ -70,28 +72,96 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
 
   return (
     <Link href={`/properties/${property.property_code}`} style={{ textDecoration: 'none' }}>
-      <div className="property-card">
-        {firstImage ? (
-          <img
-            src={firstImage}
-            alt={property.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
-          />
-        ) : (
-          <div className="property-placeholder">
-            <div className="placeholder-icon">HS</div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid rgba(240,192,64,0.15)',
+        background: '#111',
+        transition: 'border-color 0.3s ease',
+        cursor: 'pointer',
+      }}>
+
+        {/* Photo */}
+        <div style={{ position: 'relative', width: '100%', height: '260px', overflow: 'hidden', flexShrink: 0 }}>
+          {firstImage ? (
+            <img
+              src={firstImage}
+              alt={property.title}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
+            />
+          ) : (
+            <div className="property-placeholder" style={{ height: '100%' }}>
+              <div className="placeholder-icon">HS</div>
+            </div>
+          )}
+          {/* Tag badge on photo */}
+          <div style={{
+            position: 'absolute', top: '12px', left: '12px',
+            background: 'rgba(10,10,10,0.75)', border: '1px solid rgba(240,192,64,0.4)',
+            padding: '4px 10px', fontSize: '9px', letterSpacing: '2px',
+            textTransform: 'uppercase', color: '#F0C040', fontFamily: 'Montserrat, sans-serif',
+          }}>
+            {tag}
           </div>
-        )}
-        <div className="property-overlay">
-          <span className="property-tag">{tag}</span>
-          <div style={{ fontSize: '10px', letterSpacing: '2px', color: 'rgba(240,192,64,0.7)', fontFamily: 'Montserrat, sans-serif', marginBottom: '4px' }}>
+        </div>
+
+        {/* Info panel below photo */}
+        <div style={{
+          padding: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '6px',
+          background: 'linear-gradient(to bottom, #111, #0d0d0d)',
+        }}>
+          <div style={{
+            fontSize: '10px', letterSpacing: '2px', color: 'rgba(240,192,64,0.6)',
+            fontFamily: 'Montserrat, sans-serif', textTransform: 'uppercase',
+          }}>
             {property.property_code}
           </div>
-          <div className="property-name">{property.title}</div>
-          <div className="property-location">{property.region}</div>
-          <div className="property-price">{formatPrice(property.price)}</div>
-          <div className="property-cta">{tr.viewProperty}</div>
+
+          <div style={{
+            fontFamily: 'Cormorant Garamond, serif',
+            fontSize: '18px', fontWeight: 400, color: '#F5F0E8', letterSpacing: '1px',
+            lineHeight: 1.3,
+          }}>
+            {property.title}
+          </div>
+
+          <div style={{
+            fontSize: '11px', letterSpacing: '2px', color: '#888',
+            fontFamily: 'Montserrat, sans-serif', textTransform: 'uppercase',
+          }}>
+            {property.region}
+          </div>
+
+          {/* Description */}
+          <p style={{
+            fontSize: '12px', color: '#999', fontFamily: 'Montserrat, sans-serif',
+            fontWeight: 300, lineHeight: 1.7, margin: '8px 0',
+            borderTop: '1px solid rgba(240,192,64,0.1)', paddingTop: '12px',
+          }}>
+            {property.description || tr.noDescription}
+          </p>
+
+          {/* Price + CTA row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+            <div style={{
+              fontFamily: 'Cormorant Garamond, serif',
+              fontSize: '20px', color: '#F0C040', fontWeight: 400, letterSpacing: '1px',
+            }}>
+              {formatPrice(property.price)}
+            </div>
+            <div style={{
+              fontSize: '9px', letterSpacing: '3px', textTransform: 'uppercase',
+              color: '#F0C040', fontFamily: 'Montserrat, sans-serif',
+              borderBottom: '1px solid rgba(240,192,64,0.4)', paddingBottom: '2px',
+            }}>
+              {tr.viewProperty} →
+            </div>
+          </div>
         </div>
+
       </div>
     </Link>
   )

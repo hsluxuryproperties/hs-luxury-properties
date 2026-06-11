@@ -1,16 +1,58 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { MapPin, Phone, Mail } from 'lucide-react'
 
-const navLinks = [
-  { label: 'Home',       href: '/#top'       },
-  { label: 'Properties', href: '/properties' },
-  { label: 'FAQ',        href: '/faq'        },
-  { label: 'Contact Us', href: '/contact'    },
-]
+type Locale = 'en' | 'gr'
+
+function useLocale(): Locale {
+  const [locale, setLocale] = useState<Locale>('en')
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)hs_locale=([^;]+)/)
+    setLocale((match?.[1] as Locale) ?? 'en')
+  }, [])
+
+  return locale
+}
+
+const T = {
+  en: {
+    about:
+      "Connecting discerning clients with the world's most exceptional properties. Discretion, expertise, and extraordinary results.",
+    navigation: 'Navigation',
+    navLinks: [
+      { label: 'Home',       href: '/#top'       },
+      { label: 'Properties', href: '/properties' },
+      { label: 'FAQ',        href: '/faq'        },
+      { label: 'Contact Us', href: '/contact'    },
+    ],
+    contactUs: 'Contact Us',
+    location: 'Athens, Greece',
+    rights: 'All rights reserved.',
+  },
+  gr: {
+    about:
+      'Συνδέουμε απαιτητικούς πελάτες με τα πιο εξαιρετικά ακίνητα στον κόσμο. Διακριτικότητα, τεχνογνωσία και εξαιρετικά αποτελέσματα.',
+    navigation: 'Πλοήγηση',
+    navLinks: [
+      { label: 'Αρχική',          href: '/#top'       },
+      { label: 'Ακίνητα',         href: '/properties' },
+      { label: 'Συχνές Ερωτήσεις', href: '/faq'        },
+      { label: 'Επικοινωνία',     href: '/contact'    },
+    ],
+    contactUs: 'Επικοινωνία',
+    location: 'Αθήνα, Ελλάδα',
+    rights: 'Με την επιφύλαξη παντός δικαιώματος.',
+  },
+}
 
 export default function Footer() {
   const year = new Date().getFullYear()
+  const locale = useLocale()
+  const t = T[locale]
 
   return (
     <footer className="bg-dark-600 border-t border-gold-800/20">
@@ -36,8 +78,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-gold-200/50 text-sm leading-relaxed font-sans font-light max-w-xs">
-              Connecting discerning clients with the world&#39;s most exceptional
-              properties. Discretion, expertise, and extraordinary results.
+              {t.about}
             </p>
 
             <div className="flex gap-4 mt-6">
@@ -71,11 +112,11 @@ export default function Footer() {
           {/* Navigation */}
           <div>
             <h3 className="text-gold-gradient font-serif text-sm tracking-widest uppercase mb-6">
-              Navigation
+              {t.navigation}
             </h3>
             <ul className="space-y-3">
-              {navLinks.map((link) => (
-                <li key={link.label}>
+              {t.navLinks.map((link) => (
+                <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-gold-200/50 hover:text-gold-300 text-sm transition-colors duration-300 font-sans tracking-wide"
@@ -90,12 +131,12 @@ export default function Footer() {
           {/* Contact */}
           <div>
             <h3 className="text-gold-gradient font-serif text-sm tracking-widest uppercase mb-6">
-              Contact Us
+              {t.contactUs}
             </h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-gold-200/50 text-sm font-sans">
                 <MapPin size={15} className="text-gold-600 mt-0.5 shrink-0" />
-                <span>Athens, Greece</span>
+                <span>{t.location}</span>
               </li>
               <li>
                 <a
@@ -125,7 +166,7 @@ export default function Footer() {
       <div className="border-t border-gold-800/10">
         <div className="container-hs py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-gold-800 text-xs font-sans tracking-wide">
-            &copy; {year} HS Luxury Properties. All rights reserved.
+            &copy; {year} HS Luxury Properties. {t.rights}
           </p>
           <p className="text-gold-800 text-xs font-sans tracking-wide">
             hsluxuryproperties.com

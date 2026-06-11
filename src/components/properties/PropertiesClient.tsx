@@ -27,8 +27,8 @@ const T = {
   en: {
     titleOrCode:    'Title or Code',
     searchPlaceholder: 'Search...',
-    regionLabel:    'Region / Περιοχή',
-    regionPlaceholder: 'Region / Περιοχή',
+    regionLabel:    'Region ',
+    regionPlaceholder: 'Region ',
     status:         'Status',
     forSaleAndRent: 'For Sale & Rent',
     forSale:        'For Sale',
@@ -88,8 +88,8 @@ const T = {
   gr: {
     titleOrCode:    'Τίτλος ή Κωδικός',
     searchPlaceholder: 'Αναζήτηση...',
-    regionLabel:    'Περιοχή / Region',
-    regionPlaceholder: 'Περιοχή / Region',
+    regionLabel:    'Περιοχή',
+    regionPlaceholder: 'Περιοχή',
     status:         'Κατάσταση',
     forSaleAndRent: 'Πώληση & Ενοικίαση',
     forSale:        'Προς Πώληση',
@@ -643,22 +643,22 @@ export default function PropertiesClient({ properties }: { properties: Property[
             <div className="hs-filter-pair">
               <div>
                 <label style={filterLabelS}>{tr.priceFrom}</label>
-                <input style={filterInputS} type="number" placeholder="0" value={priceMin} onChange={e => setPriceMin(e.target.value)} />
+                <input style={filterInputS} type="text" inputMode="numeric" placeholder="0" value={priceMin} onChange={e => setPriceMin(e.target.value)} />
               </div>
               <div>
                 <label style={filterLabelS}>{tr.priceTo}</label>
-                <input style={filterInputS} type="number" placeholder={tr.any} value={priceMax} onChange={e => setPriceMax(e.target.value)} />
+                <input style={filterInputS} type="text" inputMode="numeric" placeholder={tr.any} value={priceMax} onChange={e => setPriceMax(e.target.value)} />
               </div>
             </div>
 
             <div className="hs-filter-pair">
               <div>
                 <label style={filterLabelS}>{tr.sqmFrom}</label>
-                <input style={filterInputS} type="number" placeholder="0" value={sqmMin} onChange={e => setSqmMin(e.target.value)} />
+                <input style={filterInputS} type="text" inputMode="numeric" placeholder="0" value={sqmMin} onChange={e => setSqmMin(e.target.value)} />
               </div>
               <div>
                 <label style={filterLabelS}>{tr.sqmTo}</label>
-                <input style={filterInputS} type="number" placeholder={tr.any} value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
+                <input style={filterInputS} type="text" inputMode="numeric" placeholder={tr.any} value={sqmMax} onChange={e => setSqmMax(e.target.value)} />
               </div>
             </div>
 
@@ -676,16 +676,16 @@ export default function PropertiesClient({ properties }: { properties: Property[
           {showMore && (
             <div className="hs-more-panel">
               <div className="hs-more-grid-6">
-                <div><label style={filterLabelS}>{tr.bedroomsFrom}</label><input style={filterInputS} type="number" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.bedroomsTo}</label><input style={filterInputS} type="number" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.bathroomsFrom}</label><input style={filterInputS} type="number" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.bathroomsTo}</label><input style={filterInputS} type="number" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.floorFrom}</label><input style={filterInputS} type="number" value={floorMin} onChange={e => setFloorMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.floorTo}</label><input style={filterInputS} type="number" value={floorMax} onChange={e => setFloorMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bedroomsFrom}</label><input style={filterInputS} type="text" inputMode="numeric" value={bedroomsMin} onChange={e => setBedroomsMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bedroomsTo}</label><input style={filterInputS} type="text" inputMode="numeric" value={bedroomsMax} onChange={e => setBedroomsMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bathroomsFrom}</label><input style={filterInputS} type="text" inputMode="numeric" value={bathroomsMin} onChange={e => setBathroomsMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.bathroomsTo}</label><input style={filterInputS} type="text" inputMode="numeric" value={bathroomsMax} onChange={e => setBathroomsMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.floorFrom}</label><input style={filterInputS} type="text" inputMode="numeric"value={floorMin} onChange={e => setFloorMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.floorTo}</label><input style={filterInputS} type="text" inputMode="numeric" value={floorMax} onChange={e => setFloorMax(e.target.value)} /></div>
               </div>
               <div className="hs-more-grid-6">
-                <div><label style={filterLabelS}>{tr.yearFrom}</label><input style={filterInputS} type="number" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} /></div>
-                <div><label style={filterLabelS}>{tr.yearTo}</label><input style={filterInputS} type="number" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.yearFrom}</label><input style={filterInputS} type="text" inputMode="numeric" placeholder="e.g. 2000" value={yearMin} onChange={e => setYearMin(e.target.value)} /></div>
+                <div><label style={filterLabelS}>{tr.yearTo}</label><input style={filterInputS} type="text" inputMode="numeric" placeholder="e.g. 2024" value={yearMax} onChange={e => setYearMax(e.target.value)} /></div>
                <div><label style={filterLabelS}>{tr.heating}</label>
                   <select style={selectS} value={heating} onChange={e => setHeating(e.target.value)}>
                     <option value="">{tr.any}</option>

@@ -64,11 +64,25 @@ function formatPrice(price: number) {
 
 function PropertyCard({ property, locale }: { property: Property; locale: Locale }) {
   const tr = t[locale]
-  const firstImage = property.images?.[0]?.url
+  const images = property.images ?? []
+  const [idx, setIdx] = useState(0)
+  const currentImage = images[idx]?.url
   const statusLabel = property.status === 'for_sale' ? tr.forSale : tr.forRent
   const tag = property.featured_investor
     ? `${tr.investmentTag} · ${statusLabel}`
     : `${tr.residenceTag} · ${statusLabel}`
+
+  function prev(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setIdx(i => (i - 1 + images.length) % images.length)
+  }
+
+  function next(e: React.MouseEvent) {
+    e.preventDefault()
+    e.stopPropagation()
+    setIdx(i => (i + 1) % images.length)
+  }
 
   return (
     <Link href={`/properties/${property.property_code}`} style={{ textDecoration: 'none' }}>
@@ -83,9 +97,9 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
 
         {/* Photo */}
         <div style={{ position: 'relative', width: '100%', height: '260px', overflow: 'hidden', flexShrink: 0 }}>
-          {firstImage ? (
+          {currentImage ? (
             <img
-              src={firstImage}
+              src={currentImage}
               alt={property.title}
               style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.6s ease' }}
             />
@@ -94,7 +108,8 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
               <div className="placeholder-icon">HS</div>
             </div>
           )}
-          {/* Tag badge on photo */}
+
+          {/* Tag badge */}
           <div style={{
             position: 'absolute', top: '12px', left: '12px',
             background: 'rgba(10,10,10,0.75)', border: '1px solid rgba(240,192,64,0.4)',
@@ -103,14 +118,49 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
           }}>
             {tag}
           </div>
+
+          {/* Arrows — only show if more than 1 image */}
+          {images.length > 1 && (
+            <>
+              <button onClick={prev} style={{
+                position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(10,10,10,0.6)', border: '1px solid rgba(240,192,64,0.3)',
+                color: '#F0C040', width: '32px', height: '32px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '14px', fontFamily: 'Montserrat, sans-serif',
+                transition: 'background 0.2s',
+              }}>‹</button>
+
+              <button onClick={next} style={{
+                position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(10,10,10,0.6)', border: '1px solid rgba(240,192,64,0.3)',
+                color: '#F0C040', width: '32px', height: '32px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '14px', fontFamily: 'Montserrat, sans-serif',
+                transition: 'background 0.2s',
+              }}>›</button>
+
+              {/* Dot indicators */}
+              <div style={{
+                position: 'absolute', bottom: '10px', left: '50%', transform: 'translateX(-50%)',
+                display: 'flex', gap: '5px',
+              }}>
+                {images.map((_, i) => (
+                  <div key={i} style={{
+                    width: '5px', height: '5px',
+                    background: i === idx ? '#F0C040' : 'rgba(240,192,64,0.3)',
+                    borderRadius: '50%',
+                    transition: 'background 0.2s',
+                  }} />
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Info panel below photo */}
+        {/* Info panel */}
         <div style={{
-          padding: '20px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
+          padding: '20px', display: 'flex', flexDirection: 'column', gap: '6px',
           background: 'linear-gradient(to bottom, #111, #0d0d0d)',
         }}>
           <div style={{
@@ -119,23 +169,18 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
           }}>
             {property.property_code}
           </div>
-
           <div style={{
             fontFamily: 'Cormorant Garamond, serif',
-            fontSize: '18px', fontWeight: 400, color: '#F5F0E8', letterSpacing: '1px',
-            lineHeight: 1.3,
+            fontSize: '18px', fontWeight: 400, color: '#F5F0E8', letterSpacing: '1px', lineHeight: 1.3,
           }}>
             {property.title}
           </div>
-
           <div style={{
             fontSize: '11px', letterSpacing: '2px', color: '#888',
             fontFamily: 'Montserrat, sans-serif', textTransform: 'uppercase',
           }}>
             {property.region}
           </div>
-
-          {/* Description */}
           <p style={{
             fontSize: '12px', color: '#999', fontFamily: 'Montserrat, sans-serif',
             fontWeight: 300, lineHeight: 1.7, margin: '8px 0',
@@ -143,8 +188,6 @@ function PropertyCard({ property, locale }: { property: Property; locale: Locale
           }}>
             {property.description || tr.noDescription}
           </p>
-
-          {/* Price + CTA row */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
             <div style={{
               fontFamily: 'Cormorant Garamond, serif',

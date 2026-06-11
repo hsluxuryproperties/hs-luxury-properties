@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 
@@ -13,11 +13,6 @@ const BUSINESS = {
   address: '123 Mayfair Street, London, W1K 0XX',
   addressLine1: '123 Mayfair Street',
   addressLine2: 'London, W1K 0XX',
-  hours: [
-    { day: 'Monday – Friday', time: '9:00am – 6:00pm' },
-    { day: 'Saturday',        time: '10:00am – 4:00pm' },
-    { day: 'Sunday',          time: 'By appointment only' },
-  ],
   // Paste your Google Maps embed src URL here (from maps.google.com → Share → Embed a map → copy the src="..." value)
   mapEmbedSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2483.0!2d-0.1499!3d51.5074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTHCsDMwJzI2LjYiTiAwwrAwOScwMC4wIlc!5e0!3m2!1sen!2suk!4v0000000000000!5m2!1sen!2suk',
 }
@@ -31,7 +26,6 @@ const muted = '#888888'
 const cream = '#F5F0E8'
 const surface = '#161616'
 
-const ENQUIRY_TYPES = ['Buying', 'Selling', 'Investment', 'General Enquiry']
 const CALL_SLOTS = [
   '9:00am – 10:00am',
   '10:00am – 11:00am',
@@ -64,7 +58,99 @@ const inputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
 }
 
+type Locale = 'en' | 'gr'
+
+function useLocale(): Locale {
+  const [locale, setLocale] = useState<Locale>('en')
+
+  useEffect(() => {
+    const match = document.cookie.match(/(?:^|;\s*)hs_locale=([^;]+)/)
+    setLocale((match?.[1] as Locale) ?? 'en')
+  }, [])
+
+  return locale
+}
+
+const T = {
+  en: {
+    eyebrow: 'Get In Touch',
+    title: 'Contact Us',
+    intro:
+      'Whether you are buying, selling, or exploring investment opportunities — our advisers are ready to assist you personally.',
+    ourDetails: 'Our Details',
+    phone: 'Phone',
+    email: 'Email',
+    office: 'Office',
+    businessHours: 'Business Hours',
+    hours: [
+      { day: 'Monday – Friday', time: '9:00am – 6:00pm' },
+      { day: 'Saturday',        time: '10:00am – 4:00pm' },
+      { day: 'Sunday',          time: 'By appointment only' },
+    ],
+    findUs: 'Find Us',
+    sendEnquiry: 'Send an Enquiry',
+    enquiryReceived: 'Enquiry Received',
+    enquiryReceivedDesc:
+      'Thank you for contacting HS Luxury Properties. A member of our team will be in touch with you shortly.',
+    fullName: 'Full Name *',
+    emailAddress: 'Email Address *',
+    phoneNumber: 'Phone Number',
+    propertyCode: 'Property Code',
+    propertyCodePlaceholder: 'e.g. HS-1001',
+    enquiryType: 'Enquiry Type',
+    enquiryTypes: ['Buying', 'Selling', 'Investment', 'General Enquiry'],
+    preferredCallTime: 'Preferred Call Time',
+    selectTimeSlot: 'Select a time slot',
+    message: 'Message *',
+    sendEnquiryBtn: 'Send Enquiry',
+    sending: 'Sending…',
+    emailError: 'Please enter a valid email address.',
+    phoneError: 'Please enter a valid phone number.',
+  },
+  gr: {
+    eyebrow: 'Επικοινωνήστε Μαζί Μας',
+    title: 'Επικοινωνία',
+    intro:
+      'Είτε αγοράζετε, είτε πουλάτε, είτε διερευνάτε επενδυτικές ευκαιρίες — οι σύμβουλοί μας είναι έτοιμοι να σας εξυπηρετήσουν προσωπικά.',
+    ourDetails: 'Τα Στοιχεία μας',
+    phone: 'Τηλέφωνο',
+    email: 'Email',
+    office: 'Γραφείο',
+    businessHours: 'Ωράριο Λειτουργίας',
+    hours: [
+      { day: 'Δευτέρα – Παρασκευή', time: '9:00 – 18:00' },
+      { day: 'Σάββατο',             time: '10:00 – 16:00' },
+      { day: 'Κυριακή',             time: 'Κατόπιν ραντεβού' },
+    ],
+    findUs: 'Βρείτε μας',
+    sendEnquiry: 'Στείλτε Ερώτημα',
+    enquiryReceived: 'Το Ερώτημά σας Ελήφθη',
+    enquiryReceivedDesc:
+      'Σας ευχαριστούμε που επικοινωνήσατε με την HS Luxury Properties. Ένα μέλος της ομάδας μας θα επικοινωνήσει σύντομα μαζί σας.',
+    fullName: 'Ονοματεπώνυμο *',
+    emailAddress: 'Διεύθυνση Email *',
+    phoneNumber: 'Τηλέφωνο',
+    propertyCode: 'Κωδικός Ακινήτου',
+    propertyCodePlaceholder: 'π.χ. HS-1001',
+    enquiryType: 'Τύπος Ερωτήματος',
+    enquiryTypes: ['Αγορά', 'Πώληση', 'Επένδυση', 'Γενικό Ερώτημα'],
+    preferredCallTime: 'Προτιμώμενη Ώρα Κλήσης',
+    selectTimeSlot: 'Επιλέξτε ώρα',
+    message: 'Μήνυμα *',
+    sendEnquiryBtn: 'Αποστολή Ερωτήματος',
+    sending: 'Αποστολή…',
+    emailError: 'Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email.',
+    phoneError: 'Παρακαλώ εισάγετε έναν έγκυρο αριθμό τηλεφώνου.',
+  },
+}
+
+// English enquiry type values are sent to Supabase (DB-safe), regardless of displayed label
+const ENQUIRY_TYPE_VALUES = ['Buying', 'Selling', 'Investment', 'General Enquiry']
+
 export default function ContactPage() {
+  const locale = useLocale()
+  const t = T[locale]
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -85,8 +171,8 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     let valid = true
-    if (!validateEmail(formData.email)) { setEmailError('Please enter a valid email address.'); valid = false } else setEmailError('')
-    if (!validatePhone(formData.phone)) { setPhoneError('Please enter a valid phone number.'); valid = false } else setPhoneError('')
+    if (!validateEmail(formData.email)) { setEmailError(t.emailError); valid = false } else setEmailError('')
+    if (!validatePhone(formData.phone)) { setPhoneError(t.phoneError); valid = false } else setPhoneError('')
     if (!valid) return
 
     setSubmitting(true)
@@ -121,13 +207,13 @@ export default function ContactPage() {
         {/* ── Hero ── */}
         <section style={{ background: dark, borderBottom: '1px solid #1e1e1e', padding: '6rem 1.5rem 4rem', textAlign: 'center' }}>
           <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.7rem', letterSpacing: '0.25em', color: gold, textTransform: 'uppercase', marginBottom: '1.25rem' }}>
-            Get In Touch
+            {t.eyebrow}
           </p>
           <h1 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 400, color: cream, lineHeight: 1.1, marginBottom: '1.5rem' }}>
-            Contact Us
+            {t.title}
           </h1>
           <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.875rem', color: muted, maxWidth: '520px', margin: '0 auto', lineHeight: 1.8 }}>
-            Whether you are buying, selling, or exploring investment opportunities — our advisers are ready to assist you personally.
+            {t.intro}
           </p>
         </section>
 
@@ -140,12 +226,12 @@ export default function ContactPage() {
             {/* Contact details */}
             <div style={{ marginBottom: '3rem' }}>
               <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: gold, marginBottom: '1.5rem' }}>
-                Our Details
+                {t.ourDetails}
               </p>
 
               {/* Phone */}
               <div style={{ marginBottom: '1.75rem' }}>
-                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>Phone</p>
+                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>{t.phone}</p>
                 <a href={`tel:${BUSINESS.phone.replace(/\s/g, '')}`} style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.2rem', color: cream, textDecoration: 'none', letterSpacing: '0.03em' }}>
                   {BUSINESS.phone}
                 </a>
@@ -153,7 +239,7 @@ export default function ContactPage() {
 
               {/* Email */}
               <div style={{ marginBottom: '1.75rem' }}>
-                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>Email</p>
+                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>{t.email}</p>
                 <a href={`mailto:${BUSINESS.email}`} style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', color: gold, textDecoration: 'none', wordBreak: 'break-all' }}>
                   {BUSINESS.email}
                 </a>
@@ -161,7 +247,7 @@ export default function ContactPage() {
 
               {/* Address */}
               <div style={{ marginBottom: '1.75rem' }}>
-                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>Office</p>
+                <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: muted, marginBottom: '0.4rem' }}>{t.office}</p>
                 <p style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.1rem', color: cream, lineHeight: 1.6, margin: 0 }}>
                   {BUSINESS.addressLine1}<br />{BUSINESS.addressLine2}
                 </p>
@@ -174,9 +260,9 @@ export default function ContactPage() {
             {/* Business hours */}
             <div style={{ marginBottom: '3rem' }}>
               <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: gold, marginBottom: '1.5rem' }}>
-                Business Hours
+                {t.businessHours}
               </p>
-              {BUSINESS.hours.map((h, i) => (
+              {t.hours.map((h, i) => (
                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.85rem' }}>
                   <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.78rem', color: muted }}>{h.day}</span>
                   <span style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.78rem', color: cream }}>{h.time}</span>
@@ -190,7 +276,7 @@ export default function ContactPage() {
             {/* Map */}
             <div>
               <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: gold, marginBottom: '1.25rem' }}>
-                Find Us
+                {t.findUs}
               </p>
               <div style={{ position: 'relative', width: '100%', paddingBottom: '70%', background: surface, border: '1px solid #2a2a2a', overflow: 'hidden' }}>
                 <iframe
@@ -211,17 +297,17 @@ export default function ContactPage() {
           {/* ── RIGHT: Form ── */}
           <div>
             <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: gold, marginBottom: '1.5rem' }}>
-              Send an Enquiry
+              {t.sendEnquiry}
             </p>
 
             {submitted ? (
               <div style={{ textAlign: 'center', padding: '3rem 2rem', border: '1px solid #2a2a2a', background: surface }}>
                 <div style={{ width: '56px', height: '56px', border: `1px solid ${gold}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: gold, fontSize: '1.25rem' }}>✓</div>
                 <h3 style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: '1.75rem', fontWeight: 400, color: cream, marginBottom: '0.75rem' }}>
-                  Enquiry Received
+                  {t.enquiryReceived}
                 </h3>
                 <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.85rem', color: muted, lineHeight: 1.8 }}>
-                  Thank you for contacting HS Luxury Properties. A member of our team will be in touch with you shortly.
+                  {t.enquiryReceivedDesc}
                 </p>
               </div>
             ) : (
@@ -230,13 +316,13 @@ export default function ContactPage() {
                 {/* Name + Email */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
                   <div>
-                    <label style={labelStyle}>Full Name *</label>
+                    <label style={labelStyle}>{t.fullName}</label>
                     <input type="text" required value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
                       style={inputStyle} />
                   </div>
                   <div>
-                    <label style={labelStyle}>Email Address *</label>
+                    <label style={labelStyle}>{t.emailAddress}</label>
                     <input type="email" required value={formData.email}
                       onChange={e => { setFormData({ ...formData, email: e.target.value }); if (emailError) setEmailError('') }}
                       style={{ ...inputStyle, border: `1px solid ${emailError ? '#c0392b' : '#2a2a2a'}` }} />
@@ -247,15 +333,15 @@ export default function ContactPage() {
                 {/* Phone + Property Code */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
                   <div>
-                    <label style={labelStyle}>Phone Number</label>
+                    <label style={labelStyle}>{t.phoneNumber}</label>
                     <input type="tel" value={formData.phone}
                       onChange={e => { setFormData({ ...formData, phone: e.target.value }); if (phoneError) setPhoneError('') }}
                       style={{ ...inputStyle, border: `1px solid ${phoneError ? '#c0392b' : '#2a2a2a'}` }} />
                     {phoneError && <p style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '0.72rem', color: '#c0392b', marginTop: '0.35rem' }}>{phoneError}</p>}
                   </div>
                   <div>
-                    <label style={labelStyle}>Property Code</label>
-                    <input type="text" placeholder="e.g. HS-1001" value={formData.propertyCode}
+                    <label style={labelStyle}>{t.propertyCode}</label>
+                    <input type="text" placeholder={t.propertyCodePlaceholder} value={formData.propertyCode}
                       onChange={e => setFormData({ ...formData, propertyCode: e.target.value })}
                       style={inputStyle} />
                   </div>
@@ -263,24 +349,24 @@ export default function ContactPage() {
 
                 {/* Enquiry type */}
                 <div>
-                  <label style={labelStyle}>Enquiry Type</label>
+                  <label style={labelStyle}>{t.enquiryType}</label>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                    {ENQUIRY_TYPES.map(type => (
-                      <button key={type} type="button"
-                        onClick={() => setFormData({ ...formData, enquiryType: formData.enquiryType === type ? '' : type })}
+                    {ENQUIRY_TYPE_VALUES.map((value, idx) => (
+                      <button key={value} type="button"
+                        onClick={() => setFormData({ ...formData, enquiryType: formData.enquiryType === value ? '' : value })}
                         style={{
                           fontFamily: 'Montserrat, sans-serif',
                           fontSize: '0.72rem',
                           letterSpacing: '0.1em',
                           textTransform: 'uppercase',
                           padding: '0.75rem 1rem',
-                          background: formData.enquiryType === type ? gold : '#1a1a1a',
-                          color: formData.enquiryType === type ? black : muted,
-                          border: `1px solid ${formData.enquiryType === type ? gold : '#2a2a2a'}`,
+                          background: formData.enquiryType === value ? gold : '#1a1a1a',
+                          color: formData.enquiryType === value ? black : muted,
+                          border: `1px solid ${formData.enquiryType === value ? gold : '#2a2a2a'}`,
                           cursor: 'pointer',
                           transition: 'all 0.2s ease',
                         }}>
-                        {type}
+                        {t.enquiryTypes[idx]}
                       </button>
                     ))}
                   </div>
@@ -288,11 +374,11 @@ export default function ContactPage() {
 
                 {/* Preferred call time */}
                 <div>
-                  <label style={labelStyle}>Preferred Call Time</label>
+                  <label style={labelStyle}>{t.preferredCallTime}</label>
                   <select value={formData.callSlot}
                     onChange={e => setFormData({ ...formData, callSlot: e.target.value })}
                     style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}>
-                    <option value="">Select a time slot</option>
+                    <option value="">{t.selectTimeSlot}</option>
                     {CALL_SLOTS.map(slot => (
                       <option key={slot} value={slot}>{slot}</option>
                     ))}
@@ -301,7 +387,7 @@ export default function ContactPage() {
 
                 {/* Message */}
                 <div>
-                  <label style={labelStyle}>Message *</label>
+                  <label style={labelStyle}>{t.message}</label>
                   <textarea required rows={5} value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
                     style={{ ...inputStyle, resize: 'vertical' }} />
@@ -323,7 +409,7 @@ export default function ContactPage() {
                       cursor: submitting ? 'not-allowed' : 'pointer',
                       transition: 'background 0.2s ease',
                     }}>
-                    {submitting ? 'Sending…' : 'Send Enquiry'}
+                    {submitting ? t.sending : t.sendEnquiryBtn}
                   </button>
                 </div>
 

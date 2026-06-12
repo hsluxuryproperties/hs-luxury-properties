@@ -85,33 +85,16 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
         const propertyId = String(p.id)
         const isActive = hoveredId === propertyId
 
-        const icon = L.divIcon({
-          className: '',
-          html: `
-            <div style="
-              background: ${isActive ? '#F0C040' : '#1a1a1a'};
-              border: 2px solid ${isActive ? '#F0C040' : 'rgba(212,160,23,0.6)'};
-              color: ${isActive ? '#0a0a0a' : '#F0C040'};
-              padding: 4px 8px;
-              font-family: Montserrat, sans-serif;
-              font-size: 10px;
-              font-weight: 600;
-              letter-spacing: 0.5px;
-              white-space: nowrap;
-              border-radius: 2px;
-              box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-              transform: translateX(-50%);
-              transition: all 0.2s;
-            ">
-              €${Number(p.price).toLocaleString('el-GR')}
-            </div>
-          `,
-          iconAnchor: [0, 0],
-        })
+        
 
-        const marker = L.marker([lat, lng], { icon })
-          .addTo(map)
-          .bindPopup(`
+        const marker = L.circle([lat, lng], {
+  radius: 500,
+  color: '#F0C040',
+  fillColor: '#F0C040',
+  fillOpacity: 0.1,
+  weight: 1.5,
+              }).addTo(map)
+             .bindPopup(`
             <div style="font-family: Montserrat, sans-serif; min-width: 180px;">
               <div style="font-size: 10px; color: #F0C040; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;">${p.property_code ?? ''}</div>
               <div style="font-size: 13px; color: #F5F0E8; margin-bottom: 6px; font-family: 'Cormorant Garamond', serif;">${p.title}</div>

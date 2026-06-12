@@ -48,6 +48,8 @@ export type Property = {
   created_at: string
   updated_at: string
   images: PropertyImage[]
+  map_lat?: number | null
+map_lng?: number | null
 }
 
 export type PropertyImage = {

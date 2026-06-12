@@ -7,6 +7,12 @@ import PropertyGallery from '@/components/properties/PropertyGallery'
 import PropertyContact from '@/components/properties/PropertyContact'
 import type { Property } from '@/types'
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
+
+const PropertyMap = dynamic(
+  () => import('@/components/properties/PropertyMap'),
+  { ssr: false }
+)
 
 type Locale = 'en' | 'gr'
 
@@ -270,23 +276,20 @@ export default async function PropertyPage({
               )}
 
               {/* Map */}
-              {property.latitude && property.longitude && (
-                <div style={{ marginBottom: '40px' }}>
-                  <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '22px', color: '#F5F0E8', letterSpacing: '2px', marginBottom: '20px', fontWeight: 300 }}>
-                    {t.location}
-                  </h2>
-                  <div style={{ border: '1px solid rgba(212,160,23,0.15)', overflow: 'hidden', height: '360px' }}>
-                    <iframe
-                      src={`https://www.google.com/maps?q=${property.latitude},${property.longitude}&z=15&output=embed`}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0, filter: 'grayscale(0.3) invert(0.05)' }}
-                      loading="lazy"
-                      allowFullScreen
-                    />
-                  </div>
-                </div>
-              )}
+              {property.map_lat && property.map_lng && (
+  <div style={{ marginBottom: '40px' }}>
+    <h2 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '22px', color: '#F5F0E8', letterSpacing: '2px', marginBottom: '20px', fontWeight: 300 }}>
+      {t.location}
+    </h2>
+    <div style={{ border: '1px solid rgba(212,160,23,0.15)', overflow: 'hidden', height: '360px' }}>
+      <PropertyMap
+        properties={[property]}
+        hoveredId={null}
+        onHover={() => {}}
+      />
+    </div>
+  </div>
+)}
 
             </div>
 

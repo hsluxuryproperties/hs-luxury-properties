@@ -129,7 +129,7 @@ export default async function PropertyPage({
 
   const { data } = await supabase
     .from('properties')
-    .select('*, images:property_images(*)')
+    .select('*, images:property_images(*), map_lat, map_lng')
     .eq('property_code', code.toUpperCase())
     .eq('active', true)
     .order('display_order', { referencedTable: 'property_images', ascending: true })

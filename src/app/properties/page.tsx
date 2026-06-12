@@ -14,7 +14,7 @@ export default async function PropertiesPage() {
 
   const { data } = await supabase
     .from('properties')
-    .select('*, images:property_images(*)')
+   .select('*, images:property_images(*), map_lat, map_lng')
     .eq('active', true)
     .order('created_at', { ascending: false })
 

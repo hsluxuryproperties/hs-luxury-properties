@@ -15,7 +15,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
   const markersRef   = useRef<Map<string, any>>(new Map())
 
   // Filter to only properties with coordinates
-  const mapped = properties.filter(p => (p as any).latitude && (p as any).longitude)
+  const mapped = properties.filter(p => (p as any).map_lat && (p as any).map_lng)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -78,8 +78,8 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
       const bounds: [number, number][] = []
 
       mapped.forEach(p => {
-        const lat = (p as any).latitude
-        const lng = (p as any).longitude
+        const lat = (p as any).map_lat
+        const lng = (p as any).map_lng
         if (!lat || !lng) return
 
         const propertyId = String(p.id)

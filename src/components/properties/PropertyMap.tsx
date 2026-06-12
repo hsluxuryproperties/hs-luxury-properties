@@ -14,23 +14,12 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
   const mapRef       = useRef<any>(null)
   const markersRef   = useRef<Map<string, any>>(new Map())
 
-  // Filter to only properties with coordinates
-  const mapped = properties.filter(p => (p as any).map_lat && (p as any).map_lng)
+  const mapped = properties.filter(p => p.map_lat && p.map_lng)
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
-    // Dynamically import Leaflet (client-only)
     import('leaflet').then(L => {
-      // Fix default icon paths broken by webpack
-      delete (L.Icon.Default.prototype as any)._getIconUrl
-      L.Icon.Default.mergeOptions({
-        iconUrl:       'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        shadowUrl:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      })
-
-      // Center on Greece
       const map = L.map(containerRef.current!, {
         center: [38.5, 24.0],
         zoom:   6,
@@ -42,7 +31,6 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
         maxZoom: 19,
       }).addTo(map)
 
-      // Style the attribution to match dark theme
       const attr = containerRef.current!.querySelector('.leaflet-control-attribution') as HTMLElement
       if (attr) {
         attr.style.background = 'rgba(10,10,10,0.8)'
@@ -62,14 +50,12 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
     }
   }, [])
 
-  // Update markers when filtered properties change
   useEffect(() => {
     if (!mapRef.current) return
 
     import('leaflet').then(L => {
       const map = mapRef.current
 
-      // Remove old markers
       markersRef.current.forEach(m => m.remove())
       markersRef.current.clear()
 
@@ -78,23 +64,19 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
       const bounds: [number, number][] = []
 
       mapped.forEach(p => {
-        const lat = (p as any).map_lat
-        const lng = (p as any).map_lng
-        if (!lat || !lng) return
+        const lat = p.map_lat as number
+        const lng = p.map_lng as number
 
         const propertyId = String(p.id)
-        const isActive = hoveredId === propertyId
 
-        
-
-        const marker = L.circle([lat, lng], {
-  radius: 500,
-  color: '#F0C040',
-  fillColor: '#F0C040',
-  fillOpacity: 0.1,
-  weight: 1.5,
-              }).addTo(map)
-             .bindPopup(`
+        const circle = L.circle([lat, lng], {
+          radius: 500,
+          color: '#F0C040',
+          fillColor: '#F0C040',
+          fillOpacity: 0.1,
+          weight: 1.5,
+        }).addTo(map)
+          .bindPopup(`
             <div style="font-family: Montserrat, sans-serif; min-width: 180px;">
               <div style="font-size: 10px; color: #F0C040; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;">${p.property_code ?? ''}</div>
               <div style="font-size: 13px; color: #F5F0E8; margin-bottom: 6px; font-family: 'Cormorant Garamond', serif;">${p.title}</div>
@@ -107,10 +89,10 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
             maxWidth: 220,
           })
 
-        marker.on('mouseover', () => onHover(propertyId))
-        marker.on('mouseout',  () => onHover(null))
+        circle.on('mouseover', () => onHover(propertyId))
+        circle.on('mouseout',  () => onHover(null))
 
-        markersRef.current.set(propertyId, marker)
+        markersRef.current.set(propertyId, circle)
         bounds.push([lat, lng])
       })
 
@@ -146,7 +128,6 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
         }
       `}</style>
 
-      {/* Leaflet CSS */}
       <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"

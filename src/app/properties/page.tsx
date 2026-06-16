@@ -14,7 +14,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
   const mapRef       = useRef<any>(null)
   const markersRef   = useRef<Map<string, any>>(new Map())
 
-  const mapped = properties.filter(p => p.map_lat && p.map_lng)
+ const mapped = properties?.filter(p => p.map_lat && p.map_lng) || [];
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return

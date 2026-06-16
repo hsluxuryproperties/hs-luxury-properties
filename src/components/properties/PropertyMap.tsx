@@ -71,10 +71,10 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
 
         const circle = L.circle([lat, lng], {
           radius: 500,
-          color: '#F0C040',
-          fillColor: '#F0C040',
-          fillOpacity: 0.1,
-          weight: 1.5,
+          color: '#3B82F6',
+          fillColor: '#3B82F6',
+          fillOpacity: 0.15,
+          weight: 2,
         }).addTo(map)
           .bindPopup(`
             <div style="font-family: Montserrat, sans-serif; min-width: 180px;">

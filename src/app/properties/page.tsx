@@ -14,7 +14,21 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
   const mapRef       = useRef<any>(null)
   const markersRef   = useRef<Map<string, any>>(new Map())
 
- const mapped = properties?.filter(p => p.map_lat && p.map_lng) || [];
+  // 1. SMART FILTER: Automatically checks for map_lat, lat, or latitude variations
+  const mapped = properties?.filter(p => {
+    const lat = p.map_lat ?? (p as any).lat ?? (p as any).latitude;
+    const lng = p.map_lng ?? (p as any).lng ?? (p as any).longitude;
+    return lat && lng;
+  }) || [];
+
+  // 2. DEBUGGER: Logs out the data to your browser inspect console so you can see what's happening
+  useEffect(() => {
+    console.log("Total properties received by map:", properties?.length);
+    console.log("Properties that successfully have coordinates:", mapped.length);
+    if (properties && properties.length > 0 && mapped.length === 0) {
+      console.log("Data sample keys to check names:", Object.keys(properties[0]));
+    }
+  }, [properties, mapped])
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
@@ -50,8 +64,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
     }
   }, [])
 
-  // Create markers ONCE per property set — does NOT depend on hoveredId,
-  // so hovering a card never re-fits bounds / zooms the map.
+  // Create markers ONCE per property set
   useEffect(() => {
     if (!mapRef.current) return
 
@@ -66,8 +79,9 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
       const bounds: [number, number][] = []
 
       mapped.forEach(p => {
-        const lat = p.map_lat as number
-        const lng = p.map_lng as number
+        // Extract whatever coordinate naming style your data uses
+        const lat = (p.map_lat ?? (p as any).lat ?? (p as any).latitude) as number
+        const lng = (p.map_lng ?? (p as any).lng ?? (p as any).longitude) as number
 
         const propertyId = String(p.id)
 
@@ -104,7 +118,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
     })
   }, [mapped.map(p => p.id).join(',')])
 
-  // Highlight the hovered circle in place — no map movement, no zoom.
+  // Highlight the hovered circle in place
   useEffect(() => {
     markersRef.current.forEach((circle, id) => {
       if (id === hoveredId) {
@@ -177,4 +191,3 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
     </>
   )
 }
-

@@ -1,78 +1,93 @@
-'use client'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import { createClient } from '@/lib/supabase/server'
+import PropertyCard from '@/components/properties/PropertyCard'
+import PropertiesFilter from '@/components/properties/PropertiesFilter'
 
-import { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
-import type { Property } from '@/types'
+export const metadata = { title: 'Properties' }
 
-// We load the map dynamically so Leaflet doesn't crash during the Vercel build phase
-const PropertyMap = dynamic(
-  () => import('@/components/properties/PropertyMap'),
-  { ssr: false }
-)
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  const params = await searchParams
+  const supabase = await createClient()
 
-export default function PropertiesPage() {
-  const [properties, setProperties] = useState<Property[]>([])
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  let query = supabase
+    .from('properties')
+    .select('*, images:property_images(*)')
+    .order('created_at', { ascending: false })
 
-  // Fetch your properties data when the page loads
-  useEffect(() => {
-    async function fetchProperties() {
-      try {
-        // Adjust this URL to match your actual API endpoint (e.g., '/api/properties')
-        const response = await fetch('/api/properties') 
-        const data = await response.json()
-        setProperties(data || [])
-      } catch (error) {
-        console.error("Failed to fetch properties:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
+  if (params.status)    query = query.eq('status', params.status)
+  if (params.region)    query = query.ilike('region', `%${params.region}%`)
+  if (params.price_min) query = query.gte('price', params.price_min)
+  if (params.price_max) query = query.lte('price', params.price_max)
+  if (params.sqm_min)   query = query.gte('sqm', params.sqm_min)
+  if (params.sqm_max)   query = query.lte('sqm', params.sqm_max)
+  if (params.bedrooms)  query = query.gte('bedrooms', params.bedrooms)
+  if (params.bathrooms) query = query.gte('bathrooms', params.bathrooms)
+  if (params.floor_min) query = query.gte('floor', params.floor_min)
+  if (params.floor_max) query = query.lte('floor', params.floor_max)
 
-    fetchProperties()
-  }, [])
+  // Boolean filters
+  const booleans = ['elevator','pool','garden','garage','furnished','beachfront','golden_visa','luxury','investment','newly_built','penthouse']
+  booleans.forEach(key => {
+    if (params[key] === 'true') query = (query as any).eq(key, true)
+  })
 
-  if (loading) {
-    return <div style={{ color: '#F5F0E8', padding: '20px' }}>Loading luxury properties...</div>
-  }
+  const { data: properties } = await query
 
   return (
-    <div style={{ display: 'flex', height: '100vh', background: '#0a0a0a' }}>
-      
-      {/* LEFT SIDE: Your list of property cards go here */}
-      <div style={{ width: '50%', overflowY: 'auto', padding: '20px' }}>
-        <h1 style={{ color: '#F0C040', fontFamily: 'Cormorant Garamond, serif', fontSize: '32px' }}>
-          Our Properties
-        </h1>
-        {properties.map((p) => (
-          <div 
-            key={p.id}
-            onMouseEnter={() => setHoveredId(String(p.id))}
-            onMouseLeave={() => setHoveredId(null)}
-            style={{ 
-              padding: '15px', 
-              margin: '10px 0', 
-              border: '1px solid rgba(212,160,23,0.15)',
-              background: hoveredId === String(p.id) ? 'rgba(212,160,23,0.05)' : 'transparent',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            <h3 style={{ color: '#F5F0E8' }}>{p.title}</h3>
-            <p style={{ color: '#F0C040' }}>€{Number(p.price).toLocaleString()}</p>
+    <>
+      <Header />
+
+      <div style={{ paddingTop: '80px', minHeight: '100vh', background: '#0A0A0A' }}>
+
+        {/* Page header */}
+        <div style={{
+          padding: '60px 60px 40px',
+          borderBottom: '1px solid rgba(212,160,23,0.1)',
+          background: '#0A0A0A',
+        }}>
+          <p className="section-label">Our Portfolio</p>
+          <h1 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(32px, 4vw, 52px)', fontWeight: 300, letterSpacing: '2px', color: '#F5F0E8', marginBottom: '8px' }}>
+            All Properties
+          </h1>
+          <div className="gold-line" style={{ marginBottom: '0' }} />
+        </div>
+
+        <div style={{ display: 'flex', gap: '0' }}>
+
+          {/* Filter sidebar */}
+          <PropertiesFilter params={params} />
+
+          {/* Grid */}
+          <div style={{ flex: 1, padding: '40px 48px' }}>
+
+            {!properties || properties.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
+                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
+                <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties found matching your criteria.</p>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: '11px', color: '#888888', letterSpacing: '1px', marginBottom: '32px', fontFamily: 'Montserrat, sans-serif' }}>
+                  {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+                  {properties.map(p => (
+                    <PropertyCard key={p.id} property={p} />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
-        ))}
+
+        </div>
       </div>
 
-      {/* RIGHT SIDE: The Live Map */}
-      <div style={{ width: '50%', height: '100%', position: 'relative' }}>
-        <PropertyMap 
-          properties={properties} 
-          hoveredId={hoveredId} 
-          onHover={setHoveredId} 
-        />
-      </div>
-
-    </div>
+      <Footer />
+    </>
   )
 }

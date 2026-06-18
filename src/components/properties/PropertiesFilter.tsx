@@ -4,22 +4,24 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 const inputStyle: React.CSSProperties = {
-  background: 'rgba(255,255,255,0.03)',
-  border: '1px solid rgba(212,160,23,0.18)',
+  background: 'rgba(255,255,255,0.06)',
+  border: '1px solid rgba(212,160,23,0.35)',
   color: '#F5F0E8',
   padding: '9px 12px',
   fontFamily: 'Montserrat, sans-serif',
   fontSize: '12px',
-  fontWeight: 300,
+  fontWeight: 400,
   outline: 'none',
   width: '100%',
+  // hide number spinners
+  MozAppearance: 'textfield' as any,
 }
 
 const labelStyle: React.CSSProperties = {
   fontSize: '9px',
   letterSpacing: '3px',
   textTransform: 'uppercase',
-  color: '#888888',
+  color: '#AAAAAA',
   marginBottom: '5px',
   display: 'block',
 }
@@ -50,6 +52,14 @@ const MORE_BOOLEAN_FILTERS = [
   { key: 'student_friendly',   label: 'Student Friendly' },
   { key: 'from_auction',       label: 'From Auction'     },
 ]
+
+const noSpinnerStyle = `
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  input[type=number] { -moz-appearance: textfield; }
+  input::placeholder { color: #555; }
+  select option { background: #1a1a1a; color: #F5F0E8; }
+`
 
 export default function PropertiesFilter({ params }: { params: Record<string, string | undefined> }) {
   const router = useRouter()
@@ -118,6 +128,7 @@ export default function PropertiesFilter({ params }: { params: Record<string, st
       position: 'relative',
       zIndex: 10,
     }}>
+      <style>{noSpinnerStyle}</style>
 
       {/* ── Main filter bar ── */}
       <div style={{
@@ -152,8 +163,8 @@ export default function PropertiesFilter({ params }: { params: Record<string, st
         <div style={{ minWidth: '200px' }}>
           <label style={labelStyle}>Price (€)</label>
           <div style={{ display: 'flex', gap: '6px' }}>
-            <input style={{ ...inputStyle, width: '90px' }} type="number" placeholder="From" value={filters.price_min} onChange={e => set('price_min', e.target.value)} />
-            <input style={{ ...inputStyle, width: '90px' }} type="number" placeholder="To"   value={filters.price_max} onChange={e => set('price_max', e.target.value)} />
+            <input style={{ ...inputStyle, width: '90px' }} type="number" placeholder="From" min={0} value={filters.price_min} onChange={e => set('price_min', e.target.value)} />
+            <input style={{ ...inputStyle, width: '90px' }} type="number" placeholder="To"   min={0} value={filters.price_max} onChange={e => set('price_max', e.target.value)} />
           </div>
         </div>
 
@@ -222,8 +233,8 @@ export default function PropertiesFilter({ params }: { params: Record<string, st
                 <div>
                   <label style={labelStyle}>Size (m²)</label>
                   <div style={{ display: 'flex', gap: '6px' }}>
-                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="From" value={filters.sqm_min} onChange={e => set('sqm_min', e.target.value)} />
-                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="To"   value={filters.sqm_max} onChange={e => set('sqm_max', e.target.value)} />
+                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="From" min={0} value={filters.sqm_min} onChange={e => set('sqm_min', e.target.value)} />
+                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="To"   min={0} value={filters.sqm_max} onChange={e => set('sqm_max', e.target.value)} />
                   </div>
                 </div>
                 <div>
@@ -238,8 +249,8 @@ export default function PropertiesFilter({ params }: { params: Record<string, st
                 <div>
                   <label style={labelStyle}>Floor</label>
                   <div style={{ display: 'flex', gap: '6px' }}>
-                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="From" value={filters.floor_min} onChange={e => set('floor_min', e.target.value)} />
-                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="To"   value={filters.floor_max} onChange={e => set('floor_max', e.target.value)} />
+                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="From" min={-5} value={filters.floor_min} onChange={e => set('floor_min', e.target.value)} />
+                    <input style={{ ...inputStyle, width: '70px' }} type="number" placeholder="To"   min={-5} value={filters.floor_max} onChange={e => set('floor_max', e.target.value)} />
                   </div>
                 </div>
               </div>

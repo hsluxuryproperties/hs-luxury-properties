@@ -31,7 +31,6 @@ export default async function PropertiesPage({
   if (params.floor_min) query = query.gte('floor', params.floor_min)
   if (params.floor_max) query = query.lte('floor', params.floor_max)
 
-  // Boolean filters
   const booleans = ['elevator','pool','garden','garage','furnished','beachfront','golden_visa','luxury','investment','newly_built','penthouse']
   booleans.forEach(key => {
     if (params[key] === 'true') query = (query as any).eq(key, true)
@@ -58,39 +57,35 @@ export default async function PropertiesPage({
           <div className="gold-line" style={{ marginBottom: '0' }} />
         </div>
 
-        <div style={{ display: 'flex', gap: '0' }}>
+        {/* Horizontal filter bar */}
+        <PropertiesFilter params={params} />
 
-          {/* Filter sidebar */}
-          <PropertiesFilter params={params} />
+        {/* Split: grid left, map right */}
+        <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)' }}>
 
-          {/* Main content: grid + map */}
-          <div style={{ flex: 1, display: 'flex', minHeight: 'calc(100vh - 80px)' }}>
-
-            {/* Scrollable property grid */}
-            <div style={{ flex: 1, padding: '40px 48px', overflowY: 'auto' }}>
-              {!properties || properties.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
-                  <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
-                  <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties found matching your criteria.</p>
+          {/* Scrollable property grid */}
+          <div style={{ flex: 1, padding: '40px 48px', overflowY: 'auto' }}>
+            {!properties || properties.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
+                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
+                <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties found matching your criteria.</p>
+              </div>
+            ) : (
+              <>
+                <p style={{ fontSize: '11px', color: '#888888', letterSpacing: '1px', marginBottom: '32px', fontFamily: 'Montserrat, sans-serif' }}>
+                  {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+                  {properties.map(p => (
+                    <PropertyCard key={p.id} property={p} />
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <p style={{ fontSize: '11px', color: '#888888', letterSpacing: '1px', marginBottom: '32px', fontFamily: 'Montserrat, sans-serif' }}>
-                    {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
-                  </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-                    {properties.map(p => (
-                      <PropertyCard key={p.id} property={p} />
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {/* Sticky map panel */}
-            <PropertiesMapPanel properties={properties ?? []} />
-
+              </>
+            )}
           </div>
+
+          {/* Sticky map */}
+          <PropertiesMapPanel properties={properties ?? []} />
 
         </div>
       </div>

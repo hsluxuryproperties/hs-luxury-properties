@@ -3,6 +3,7 @@ import Footer from '@/components/layout/Footer'
 import { createClient } from '@/lib/supabase/server'
 import PropertyCard from '@/components/properties/PropertyCard'
 import PropertiesFilter from '@/components/properties/PropertiesFilter'
+import PropertiesMapPanel from '@/components/properties/PropertiesMapPanel'
 
 export const metadata = { title: 'Properties' }
 
@@ -62,26 +63,33 @@ export default async function PropertiesPage({
           {/* Filter sidebar */}
           <PropertiesFilter params={params} />
 
-          {/* Grid */}
-          <div style={{ flex: 1, padding: '40px 48px' }}>
+          {/* Main content: grid + map */}
+          <div style={{ flex: 1, display: 'flex', minHeight: 'calc(100vh - 80px)' }}>
 
-            {!properties || properties.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
-                <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
-                <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties found matching your criteria.</p>
-              </div>
-            ) : (
-              <>
-                <p style={{ fontSize: '11px', color: '#888888', letterSpacing: '1px', marginBottom: '32px', fontFamily: 'Montserrat, sans-serif' }}>
-                  {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
-                </p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
-                  {properties.map(p => (
-                    <PropertyCard key={p.id} property={p} />
-                  ))}
+            {/* Scrollable property grid */}
+            <div style={{ flex: 1, padding: '40px 48px', overflowY: 'auto' }}>
+              {!properties || properties.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '80px 0', color: '#888888', fontFamily: 'Montserrat, sans-serif' }}>
+                  <div style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: '48px', color: 'rgba(212,160,23,0.2)', marginBottom: '16px' }}>HS</div>
+                  <p style={{ fontSize: '13px', letterSpacing: '1px' }}>No properties found matching your criteria.</p>
                 </div>
-              </>
-            )}
+              ) : (
+                <>
+                  <p style={{ fontSize: '11px', color: '#888888', letterSpacing: '1px', marginBottom: '32px', fontFamily: 'Montserrat, sans-serif' }}>
+                    {properties.length} {properties.length === 1 ? 'property' : 'properties'} found
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+                    {properties.map(p => (
+                      <PropertyCard key={p.id} property={p} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Sticky map panel */}
+            <PropertiesMapPanel properties={properties ?? []} />
+
           </div>
 
         </div>

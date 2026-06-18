@@ -16,6 +16,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
 
   const mapped = properties.filter(p => p.map_lat && p.map_lng)
 
+  // Initialise map once
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return
 
@@ -50,6 +51,7 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
     }
   }, [])
 
+  // Rebuild markers when properties change
   useEffect(() => {
     if (!mapRef.current) return
 
@@ -66,7 +68,6 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
       mapped.forEach(p => {
         const lat = p.map_lat as number
         const lng = p.map_lng as number
-
         const propertyId = String(p.id)
 
         const circle = L.circle([lat, lng], {
@@ -100,7 +101,21 @@ export default function PropertyMap({ properties, hoveredId, onHover }: Props) {
         map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14 })
       }
     })
-  }, [mapped.map(p => p.id).join(','), hoveredId])
+  }, [mapped.map(p => p.id).join(',')])
+
+  // Update circle style when hoveredId changes (no full rebuild)
+  useEffect(() => {
+    markersRef.current.forEach((circle, id) => {
+      const isHovered = id === hoveredId
+      circle.setStyle({
+        color:       isHovered ? '#D4A017' : '#3B82F6',
+        fillColor:   isHovered ? '#D4A017' : '#3B82F6',
+        fillOpacity: isHovered ? 0.30      : 0.15,
+        weight:      isHovered ? 3         : 2,
+      })
+      if (isHovered) circle.openPopup()
+    })
+  }, [hoveredId])
 
   return (
     <>
